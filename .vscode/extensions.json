@@ -9,6 +9,7 @@
     "ms-vscode.cpptools", // C/C++ IntelliSense, debugging, and code browsing
     "twxs.cmake", // CMake language support
     "ms-vscode.cmake-tools", // CMake project integration
+    "xaver.clang-format", // Code formatter for C++
     // ROS Development
     "ms-iot.vscode-ros", // ROS support in Visual Studio Code
     "smilerobotics.urdf", // URDF support for ROS
