@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "colcon: build symlink (debug)",
+            "type": "shell",
+            "command": "cd ~/vector_ws && colcon build --symlink-install --event-handlers console_direct+",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "colcon: build (vector_interfaces)",
+            "type": "shell",
+            "command": "cd ~/vector_ws && colcon build --packages-select vector_interfaces --symlink-install --event-handlers console_direct+",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "colcon: build (debug)",
+            "type": "shell",
+            "command": "cd ~/vector_ws && colcon build --event-handlers console_direct+",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "colcon: clean",
+            "type": "shell",
+            "command": "cd ~/vector_ws && rm -rf build/ install/ log/",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+    ]
+}

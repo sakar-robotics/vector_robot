@@ -1,0 +1,30 @@
+{
+  "recommendations": [
+    // Python Development
+    "ms-python.autopep8", // Code formatter for Python
+    "ms-python.python", // Python language support
+    "ms-python.flake8", // Linting for Python
+    "ms-python.vscode-pylance", // Fast, feature-rich language support for Python
+    // C++ Development
+    "ms-vscode.cpptools", // C/C++ IntelliSense, debugging, and code browsing
+    "twxs.cmake", // CMake language support
+    "ms-vscode.cmake-tools", // CMake project integration
+    // ROS Development
+    "ms-iot.vscode-ros", // ROS support in Visual Studio Code
+    "smilerobotics.urdf", // URDF support for ROS
+    "redhat.vscode-xml", // XML language support
+    // PlatformIO
+    "platformio.platformio-ide", // PlatformIO IDE for embedded development
+    "ms-vscode.vscode-serial-monitor", // Serial monitor for Visual Studio Code
+    // Remote Development
+    "ms-vscode-remote.vscode-remote-extensionpack", // Remote development support
+    // Code Quality and Productivity
+    "streetsidesoftware.code-spell-checker", // Spell checker for code
+    "usernamehw.errorlens", // Highlights errors and warnings
+    "aaron-bond.better-comments", // Improve comment readability
+    "alefragnani.Bookmarks", // Bookmark support for code navigation
+    "eamodio.gitlens", // Git integration and visualization (Need to configure this)
+    // Collaboration
+    "ms-vsliveshare.vsliveshare" // To share VS Code window with others
+  ]
+}
