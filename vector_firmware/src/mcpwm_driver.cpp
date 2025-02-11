@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Sakar Robotics
+
 #include "mcpwm_driver.hpp"
 #include "configurations.hpp"
 #include <Arduino.h>
@@ -88,8 +90,7 @@ void motorSetSpeed(uint8_t motor, int8_t speed)
   if(motor < 1 || motor > 4)
     return;  // ! Invalid motor number
 
-  if(speed == 0)
-  {
+  if(speed == 0) {
     motorStop(motor);
     return;
   }
