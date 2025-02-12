@@ -46,13 +46,12 @@ class ESP32Encoder
 public:
   /**
    * @brief Construct a new ESP32Encoder object.
-   * 
+   *
    * @param always_interrupt Set to true to enable an interrupt on every encoder pulse.
    * @param enc_isr_cb Callback executed on every encoder ISR; receives a pointer to this instance.
    * @param enc_isr_cb_data Optional data passed to the ISR callback. Defaults to this instance if nullptr.
    */
-  ESP32Encoder(bool always_interrupt = false, enc_isr_cb_t enc_isr_cb = nullptr,
-               void* enc_isr_cb_data = nullptr);
+  ESP32Encoder(bool always_interrupt = false, enc_isr_cb_t enc_isr_cb = nullptr, void* enc_isr_cb_data = nullptr);
 
   /**
    * @brief Destroy the ESP32Encoder object.
@@ -118,9 +117,10 @@ public:
   gpio_num_t aPinNumber;       // GPIO Number for channel A
   gpio_num_t bPinNumber;       // GPIO Number for channel B
   pcnt_unit_t unit;            // PCNT hardware unit used
-  int countsMode = 2;          // Count mode (currently fixed to 2)
-  volatile int64_t count = 0;  // Software-compensated encoder count
   pcnt_config_t r_enc_config;  // PCNT configuration structure
+
+  int countsMode         = 2;  // Count mode (currently fixed to 2)
+  volatile int64_t count = 0;  // Software-compensated encoder count
 
   // Internal pull resistor configuration
   static puType useInternalWeakPullResistors;

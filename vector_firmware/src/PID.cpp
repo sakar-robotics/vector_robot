@@ -1,8 +1,7 @@
 // Copyright (c) 2025 Sakar Robotics
 #include "PID.hpp"
 
-PIDController::PIDController(float _Kp, float _Ki, float _Kd,
-                             float _derivativeFilterAlpha, float _minOutput,
+PIDController::PIDController(float _Kp, float _Ki, float _Kd, float _derivativeFilterAlpha, float _minOutput,
                              float _maxOutput, uint32_t _sampleTime)
   : Kp(_Kp)
   , Ki(_Ki)
@@ -12,12 +11,12 @@ PIDController::PIDController(float _Kp, float _Ki, float _Kd,
   , maxOutput(_maxOutput)
   , sampleTime(_sampleTime)
 {
-  integral = 0.0f;
-  prevError = 0.0f;
+  integral               = 0.0f;
+  prevError              = 0.0f;
   prevFilteredDerivative = 0.0f;
-  prevMeasurement = 0.0f;
-  lastOutput = 0.0f;
-  lastTime = millis();
+  prevMeasurement        = 0.0f;
+  lastOutput             = 0.0f;
+  lastTime               = millis();
 
   // Calculate maximum integral to mitigate windup (if Ki is non-zero)
   if(Ki != 0.0f)
@@ -67,17 +66,17 @@ float PIDController::compute(float setpoint, float measurement)
   // Derivative component: use measurement derivative to avoid derivative kick.
   // D = Kd * ( - (d(measurement)/dt) )
   float derivative = (measurement - prevMeasurement) / dt;
-  derivative = -derivative;  // Invert derivative, so D counters the measurement change
+  derivative       = -derivative;  // Invert derivative, so D counters the measurement change
 
   // LOW PASS FILTER
-  float filteredDerivative = derivativeFilterAlpha * derivative +
-                             (1.0f - derivativeFilterAlpha) * prevFilteredDerivative;
+  float filteredDerivative =
+      derivativeFilterAlpha * derivative + (1.0f - derivativeFilterAlpha) * prevFilteredDerivative;
   float Dout = Kd * filteredDerivative;
 
   // Save State for the next iteration
-  prevError = error;
+  prevError              = error;
   prevFilteredDerivative = filteredDerivative;
-  prevMeasurement = measurement;
+  prevMeasurement        = measurement;
 
   // Calculate total output.
   float output = Pout + Iout + Dout;
@@ -93,10 +92,10 @@ float PIDController::compute(float setpoint, float measurement)
 
 void PIDController::reset()
 {
-  integral = 0.0f;
-  prevError = 0.0f;
+  integral               = 0.0f;
+  prevError              = 0.0f;
   prevFilteredDerivative = 0.0f;
-  prevMeasurement = 0.0f;
-  lastOutput = 0.0f;
-  lastTime = millis();
+  prevMeasurement        = 0.0f;
+  lastOutput             = 0.0f;
+  lastTime               = millis();
 }

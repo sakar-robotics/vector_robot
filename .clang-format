@@ -2,6 +2,7 @@
 BasedOnStyle: Google
 AccessModifierOffset: -2
 ConstructorInitializerIndentWidth: 2
+AlignConsecutiveAssignments: Consecutive
 AlignEscapedNewlinesLeft: false
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
@@ -14,7 +15,7 @@ BreakBeforeBinaryOperators: false
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: BeforeComma
 BinPackParameters: true
-ColumnLimit: 90
+ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 DerivePointerBinding: false
 PointerBindsToType: true
@@ -35,6 +36,7 @@ Standard: Auto
 IndentWidth: 2
 TabWidth: 2
 UseTab: Never
+FixNamespaceComments: true
 IndentFunctionDeclarationAfterType: false
 SpacesInParentheses: false
 SpacesInAngles: false
@@ -44,10 +46,9 @@ SpaceAfterControlStatementKeyword: true
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeParens: Never
 ContinuationIndentWidth: 4
-SortIncludes: false
+SortIncludes: true
 SpaceAfterCStyleCast: false
-ReflowComments: false
-
+ReflowComments: true
 # Configure each individual brace in BraceWrapping
 BreakBeforeBraces: Custom
 
@@ -55,14 +56,14 @@ BreakBeforeBraces: Custom
 BraceWrapping:
   {
     AfterClass: "true",
-    AfterControlStatement: "true",
+    AfterControlStatement: "false",
     AfterEnum: "true",
     AfterFunction: "true",
     AfterNamespace: "true",
     AfterStruct: "true",
     AfterUnion: "true",
     BeforeCatch: "true",
-    BeforeElse: "true",
+    BeforeElse: "false",
     IndentBraces: "false",
     SplitEmptyFunction: "false",
   }

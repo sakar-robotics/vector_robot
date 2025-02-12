@@ -13,19 +13,18 @@ static portMUX_TYPE spinlock = portMUX_INITIALIZER_UNLOCKED;
 #define _ENTER_CRITICAL() portENTER_CRITICAL_SAFE(&spinlock)
 #define _EXIT_CRITICAL() portEXIT_CRITICAL_SAFE(&spinlock)
 
-//static ESP32Encoder *gpio2enc[48];
+// static ESP32Encoder *gpio2enc[48];
 //
 //
-puType ESP32Encoder::useInternalWeakPullResistors = puType::down;
-uint32_t ESP32Encoder::isrServiceCpuCore = ISR_CORE_USE_DEFAULT;
+puType ESP32Encoder::useInternalWeakPullResistors        = puType::down;
+uint32_t ESP32Encoder::isrServiceCpuCore                 = ISR_CORE_USE_DEFAULT;
 ESP32Encoder* ESP32Encoder::encoders[MAX_ESP32_ENCODERS] = {
   NULL,
 };
 
 bool ESP32Encoder::attachedInterrupt = false;
 
-ESP32Encoder::ESP32Encoder(bool always_interrupt_, enc_isr_cb_t enc_isr_cb,
-                           void* enc_isr_cb_data)
+ESP32Encoder::ESP32Encoder(bool always_interrupt_, enc_isr_cb_t enc_isr_cb, void* enc_isr_cb_data)
   : always_interrupt{ always_interrupt_ }
   , aPinNumber{ (gpio_num_t)0 }
   , bPinNumber{ (gpio_num_t)0 }
@@ -53,7 +52,7 @@ ESP32Encoder::~ESP32Encoder()
 static void esp32encoder_pcnt_intr_handler(void* arg)
 {
   ESP32Encoder* esp32enc = static_cast<ESP32Encoder*>(arg);
-  pcnt_unit_t unit = esp32enc->r_enc_config.unit;
+  pcnt_unit_t unit       = esp32enc->r_enc_config.unit;
   _ENTER_CRITICAL();
   if(PCNT.status_unit[unit].COUNTER_H_LIM) {
     esp32enc->count = esp32enc->count + esp32enc->r_enc_config.counter_h_lim;
@@ -61,8 +60,7 @@ static void esp32encoder_pcnt_intr_handler(void* arg)
   } else if(PCNT.status_unit[unit].COUNTER_L_LIM) {
     esp32enc->count = esp32enc->count + esp32enc->r_enc_config.counter_l_lim;
     pcnt_counter_clear(unit);
-  } else if(esp32enc->always_interrupt &&
-            (PCNT.status_unit[unit].thres0_lat || PCNT.status_unit[unit].thres1_lat)) {
+  } else if(esp32enc->always_interrupt && (PCNT.status_unit[unit].thres0_lat || PCNT.status_unit[unit].thres1_lat)) {
     int16_t c;
     pcnt_get_counter_value(unit, &c);
     esp32enc->count = esp32enc->count + c;
@@ -83,13 +81,13 @@ void ESP32Encoder::detach()
   pcnt_counter_pause(unit);
   pcnt_isr_handler_remove(this->r_enc_config.unit);
   ESP32Encoder::encoders[unit] = NULL;
-  attached = false;
+  attached                     = false;
 }
 
 static IRAM_ATTR void ipc_install_isr_on_core(void* arg)
 {
   esp_err_t* result = (esp_err_t*)arg;
-  *result = pcnt_isr_service_install(0);
+  *result           = pcnt_isr_service_install(0);
 }
 
 void ESP32Encoder::attach(int a, int b, encType et)
@@ -113,11 +111,11 @@ void ESP32Encoder::attach(int a, int b, encType et)
   }
 
   // Set data now that pin attach checks are done
-  unit = (pcnt_unit_t)index;
+  unit             = (pcnt_unit_t)index;
   this->aPinNumber = (gpio_num_t)a;
   this->bPinNumber = (gpio_num_t)b;
 
-  //Set up the IO state of hte pin
+  // Set up the IO state of hte pin
   gpio_pad_select_gpio(aPinNumber);
   gpio_pad_select_gpio(bPinNumber);
   gpio_set_direction(aPinNumber, GPIO_MODE_INPUT);
@@ -132,16 +130,14 @@ void ESP32Encoder::attach(int a, int b, encType et)
   }
   // Set up encoder PCNT configuration
   // Configure channel 0
-  r_enc_config.pulse_gpio_num = aPinNumber;  //Rotary Encoder Chan A
-  r_enc_config.ctrl_gpio_num = bPinNumber;   //Rotary Encoder Chan B
+  r_enc_config.pulse_gpio_num = aPinNumber;  // Rotary Encoder Chan A
+  r_enc_config.ctrl_gpio_num  = bPinNumber;  // Rotary Encoder Chan B
 
-  r_enc_config.unit = unit;
+  r_enc_config.unit    = unit;
   r_enc_config.channel = PCNT_CHANNEL_0;
 
-  r_enc_config.pos_mode = et != encType::single ?
-                              PCNT_COUNT_DEC :
-                              PCNT_COUNT_DIS;  //Count Only On Rising-Edges
-  r_enc_config.neg_mode = PCNT_COUNT_INC;      // Discard Falling-Edge
+  r_enc_config.pos_mode = et != encType::single ? PCNT_COUNT_DEC : PCNT_COUNT_DIS;  // Count Only On Rising-Edges
+  r_enc_config.neg_mode = PCNT_COUNT_INC;                                           // Discard Falling-Edge
 
   r_enc_config.lctrl_mode = PCNT_MODE_KEEP;     // Rising A on HIGH B = CW Step
   r_enc_config.hctrl_mode = PCNT_MODE_REVERSE;  // Rising A on LOW B = CCW Step
@@ -152,12 +148,12 @@ void ESP32Encoder::attach(int a, int b, encType et)
   pcnt_unit_config(&r_enc_config);
 
   // Configure channel 0
-  r_enc_config.pulse_gpio_num = bPinNumber;  //make prior control into signal
-  r_enc_config.ctrl_gpio_num = aPinNumber;   //and prior signal into control
+  r_enc_config.pulse_gpio_num = bPinNumber;  // make prior control into signal
+  r_enc_config.ctrl_gpio_num  = aPinNumber;  // and prior signal into control
 
   r_enc_config.channel = PCNT_CHANNEL_1;  // channel 1
 
-  r_enc_config.pos_mode = PCNT_COUNT_DIS;  //disabling channel 1
+  r_enc_config.pos_mode = PCNT_COUNT_DIS;  // disabling channel 1
   r_enc_config.neg_mode = PCNT_COUNT_DIS;  // disabling channel 1
 
   r_enc_config.lctrl_mode = PCNT_MODE_DISABLE;  // disabling channel 1
@@ -166,7 +162,7 @@ void ESP32Encoder::attach(int a, int b, encType et)
   if(et == encType::full) {
     // set up second channel for full quad
 
-    r_enc_config.pos_mode = PCNT_COUNT_DEC;  //Count Only On Rising-Edges
+    r_enc_config.pos_mode = PCNT_COUNT_DEC;  // Count Only On Rising-Edges
     r_enc_config.neg_mode = PCNT_COUNT_INC;  // Discard Falling-Edge
 
     r_enc_config.lctrl_mode = PCNT_MODE_REVERSE;  // prior high mode is now low
@@ -183,23 +179,19 @@ void ESP32Encoder::attach(int a, int b, encType et)
   pcnt_counter_pause(unit);  // Initial PCNT init
   /* Register ISR service and enable interrupts for PCNT unit */
   if(!attachedInterrupt) {
-    if(isrServiceCpuCore == ISR_CORE_USE_DEFAULT ||
-       isrServiceCpuCore == xPortGetCoreID()) {
+    if(isrServiceCpuCore == ISR_CORE_USE_DEFAULT || isrServiceCpuCore == xPortGetCoreID()) {
       esp_err_t er = pcnt_isr_service_install(0);
       if(er != ESP_OK) {
         ESP_LOGE(TAG_ENCODER, "Encoder install isr service on same core failed");
       }
     } else {
       esp_err_t ipc_ret_code = ESP_FAIL;
-      esp_err_t er = esp_ipc_call_blocking(isrServiceCpuCore, ipc_install_isr_on_core,
-                                           &ipc_ret_code);
+      esp_err_t er           = esp_ipc_call_blocking(isrServiceCpuCore, ipc_install_isr_on_core, &ipc_ret_code);
       if(er != ESP_OK) {
-        ESP_LOGE(TAG_ENCODER, "IPC call to install isr service on core %ud failed",
-                 isrServiceCpuCore);
+        ESP_LOGE(TAG_ENCODER, "IPC call to install isr service on core %ud failed", isrServiceCpuCore);
       }
       if(ipc_ret_code != ESP_OK) {
-        ESP_LOGE(TAG_ENCODER, "Encoder install isr service on core %ud failed",
-                 isrServiceCpuCore);
+        ESP_LOGE(TAG_ENCODER, "Encoder install isr service on core %ud failed", isrServiceCpuCore);
       }
     }
     attachedInterrupt = true;
