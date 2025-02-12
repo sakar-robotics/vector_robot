@@ -6,7 +6,7 @@
 namespace Config
 {
 
-//* MOTOR DRIVE PINS: direction and PWM pins
+//. MOTOR DRIVE PINS: direction and PWM pins
 struct MotorDriverPins
 {
   int dir;
@@ -20,7 +20,7 @@ static constexpr MotorDriverPins MOTOR_DRIVER_PINS[4] = {
   { 8, 9 }   // Motor 4
 };
 
-//* ENCODER PINS: Encoder has two pins(A and B)
+//. ENCODER PINS: Encoder has two pins(A and B)
 struct EncoderPins
 {
   int A;
@@ -50,7 +50,29 @@ static constexpr PIDParameters PID_PARAMS[4] = {
   { 1.0f, 0.01f, 0.1f, 0.1f }   // Motor 4
 };
 
-// Other Parameters
+//. WIFI Configuration Parameters
+struct WifiConfig
+{
+  const char* ssid;     /**< Wifi network SSID */
+  const char* password; /**< Wifi network password */
+  uint8_t ip[4];        /**< Agent IP address represented as four octets */
+  size_t port;          /**< Agent port number */
+
+  inline IPAddress getAgentIP() const
+  {
+    return IPAddress(ip[0], ip[1], ip[2], ip[3]);
+  }
+};
+
+static constexpr WifiConfig WIFI_CONFIG = {
+  "sakar_wifi_ssid",      // SSID
+  "sakar_wifi_password",  // Password
+  { 10, 42, 0, 1 },       // IP
+  8888                    // Port
+};
+
+//. Other Parameters
+static constexpr int ROS_DOMAIN_ID = 20;
 
 }  // namespace Config
 

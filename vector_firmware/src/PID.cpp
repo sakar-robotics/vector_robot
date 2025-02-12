@@ -1,8 +1,13 @@
 // Copyright (c) 2025 Sakar Robotics
 #include "PID.hpp"
 
-PIDController::PIDController(float _Kp, float _Ki, float _Kd, float _derivativeFilterAlpha, float _minOutput,
-                             float _maxOutput, uint32_t _sampleTime)
+PIDController::PIDController(float _Kp,
+                             float _Ki,
+                             float _Kd,
+                             float _derivativeFilterAlpha,
+                             float _minOutput,
+                             float _maxOutput,
+                             uint32_t _sampleTime)
   : Kp(_Kp)
   , Ki(_Ki)
   , Kd(_Kd)
@@ -30,8 +35,7 @@ void PIDController::setTunings(float _Kp, float _Ki, float _Kd)
   Kp = _Kp;
   Ki = _Ki;
   Kd = _Kd;
-  if(Ki != 0.0f)
-    maxIntegral = maxOutput / Ki;
+  if(Ki != 0.0f) maxIntegral = maxOutput / Ki;
 }
 
 float PIDController::compute(float setpoint, float measurement)
