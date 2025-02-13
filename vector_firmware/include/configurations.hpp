@@ -44,10 +44,10 @@ struct PIDParameters
 };
 
 static constexpr PIDParameters PID_PARAMS[4] = {
-  { 1.0f, 0.01f, 0.1f, 0.1f },  // Motor 1
-  { 1.0f, 0.01f, 0.1f, 0.1f },  // Motor 2
-  { 1.0f, 0.01f, 0.1f, 0.1f },  // Motor 3
-  { 1.0f, 0.01f, 0.1f, 0.1f }   // Motor 4
+  { 1.0f, 0.01f, 0.1f, 0.9f },  // Motor 1
+  { 1.0f, 0.01f, 0.1f, 0.9f },  // Motor 2
+  { 1.0f, 0.01f, 0.1f, 0.9f },  // Motor 3
+  { 1.0f, 0.01f, 0.1f, 0.9f }   // Motor 4
 };
 
 //. WIFI Configuration Parameters

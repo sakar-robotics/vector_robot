@@ -103,3 +103,18 @@ void PIDController::reset()
   lastOutput             = 0.0f;
   lastTime               = millis();
 }
+
+float PIDController::getKp() const
+{
+  return Kp;
+}
+
+float PIDController::getKi() const
+{
+  return Ki;
+}
+
+float PIDController::getKd() const
+{
+  return Kd;
+}

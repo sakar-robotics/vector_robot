@@ -52,7 +52,7 @@ void motorSetSpeed(uint8_t motor, int8_t speed);
  * @param out_max Maximum value of the output range.
  * @return Mapped value.
  */
-int speed_map(int x, int in_min, int in_max, int out_min, int out_max)
+inline int speed_map(int x, int in_min, int in_max, int out_min, int out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

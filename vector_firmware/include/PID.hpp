@@ -39,7 +39,12 @@ public:
    * @param _maxOutput Maximum output value (e.g., 100 for PWM).
    * @param _sampleTime Fixed sample time in milliseconds for PID computation.
    */
-  PIDController(float _Kp, float _Ki, float _Kd, float _derivativeFilterAlpha, float _minOutput, float _maxOutput,
+  PIDController(float _Kp,
+                float _Ki,
+                float _Kd,
+                float _derivativeFilterAlpha,
+                float _minOutput,
+                float _maxOutput,
                 uint32_t _sampleTime);
 
   /**
@@ -86,6 +91,27 @@ public:
    * @brief Reset the PID controller's internal state.
    */
   void reset();
+
+  /**
+   * @brief Get the Proportional gain (Kp).
+   *
+   * @return float
+   */
+  float getKp() const;
+
+  /**
+   * @brief Get the Integral gain (Ki).
+   *
+   * @return float
+   */
+  float getKi() const;
+
+  /**
+   * @brief Get the Derivative gain (Kd).
+   *
+   * @return float
+   */
+  float getKd() const;
 
 private:
   // PID gains
