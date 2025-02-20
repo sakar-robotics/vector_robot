@@ -1,0 +1,4 @@
+int32 motor1_encoder_ticks_per_sec
+int32 motor2_encoder_ticks_per_sec
+int32 motor3_encoder_ticks_per_sec
+int32 motor4_encoder_ticks_per_sec

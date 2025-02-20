@@ -1,0 +1,4 @@
+int64 motor1_encoder_ticks
+int64 motor2_encoder_ticks
+int64 motor3_encoder_ticks
+int64 motor4_encoder_ticks

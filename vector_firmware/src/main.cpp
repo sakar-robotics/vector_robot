@@ -1,0 +1,77 @@
+// Copyright (c) 2025 Sakar Robotics
+
+#include <Arduino.h>
+#include <micro_ros_platformio.h>
+
+#include "configurations.hpp"
+#include "mcpwm_driver.hpp"
+#include "uros_core.hpp"
+
+// Uncomment one of the following transport definations as needed
+// #define USE_WIFI_TRANSPORT
+#define USE_SERIAL_TRANSPORT
+
+void setup()
+{
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(115200);
+
+  Serial.println("Starting Vector Base ESP32...");
+
+#ifdef USE_WIFI_TRANSPORT
+  // Wifi Transport initialization
+  IPAddress agent_ip = Config::WIFI_CONFIG.getAgentIP();
+  set_microros_wifi_transports(Config::WIFI_CONFIG.ssid,
+                               Config::WIFI_CONFIG.password,
+                               agent_ip,
+                               Config::WIFI_CONFIG.port);
+
+#elif defined(USE_SERIAL_TRANSPORT)
+  // Serial Transport initialization
+  Serial.println("Serial Starting...");
+
+  set_microros_serial_transports(Serial);
+
+  Serial.println("Serial Completed...");
+
+#else
+#error " No Transport defined! Please define USE_WIFI_TRANSPORT or USE_SERIAL_TRANSPORT"
+#endif
+  flashLED(3);
+  setup_hardware();
+  state = WAITING_AGENT;
+  flashLED(5);
+}
+
+void loop()
+{
+  switch(state) {
+    case WAITING_AGENT:
+      EXECUTE_EVERY_N_MS(500, state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_AVAILABLE : WAITING_AGENT;);
+      break;
+
+    case AGENT_AVAILABLE:
+      state = (true == create_entities()) ? AGENT_CONNECTED : WAITING_AGENT;
+
+      if(state == WAITING_AGENT) {
+        destroyEntities();
+      }
+      break;
+
+    case AGENT_CONNECTED:
+      EXECUTE_EVERY_N_MS(200,
+                         state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_CONNECTED : AGENT_DISCONNECTED;);
+      if(state == AGENT_CONNECTED) {
+        rclc_executor_spin_some(&executor_one, RCL_MS_TO_NS(10));
+        rclc_executor_spin_some(&executor_two, RCL_MS_TO_NS(10));
+      }
+      break;
+
+    case AGENT_DISCONNECTED:
+      destroyEntities();
+      state = WAITING_AGENT;
+      break;
+    default:
+      break;
+  }
+}
