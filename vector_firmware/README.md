@@ -56,6 +56,10 @@ By default, the code is set up for serial transport. To use WiFi:
 - In **main.cpp**, comment out `#define USE_SERIAL_TRANSPORT` and uncomment `#define USE_WIFI_TRANSPORT`.
 - In **platformio.ini**, change the `board_microros_transport` value from `serial` to `wifi`.
 
+## new_colcon.meta Configuration
+
+The file `new_colcon.meta` is provided to increase the limits for services and other entities due to the parameter server requirements. It sets specific CMake arguments for the `rmw_microxrcedds` package, such as increasing the maximum number of nodes, publishers, subscriptions, services, and clients. Review this file to ensure it meets the needs of your deployment.
+
 ## Uploading the Code
 
 Ensure PlatformIO is installed. To build and upload the firmware, press **Ctrl+Alt+U**. Verify your configuration in `configurations.hpp` before proceeding.
