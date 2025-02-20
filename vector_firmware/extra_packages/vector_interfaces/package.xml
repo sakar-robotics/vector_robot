@@ -9,6 +9,7 @@
   <maintainer email="adyansh@sakarrobotics.com">Adyansh Gupta</maintainer>
 
   <license>TODO</license>
+  <depend>actions_msgs</depend>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <build_depend>rosidl_default_generators</build_depend>

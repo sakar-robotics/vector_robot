@@ -44,10 +44,10 @@ struct PIDParameters
 };
 
 static constexpr PIDParameters PID_PARAMS[4] = {
-  { 1.0f, 0.01f, 0.1f, 0.9f },  // Motor 1
-  { 1.0f, 0.01f, 0.1f, 0.9f },  // Motor 2
-  { 1.0f, 0.01f, 0.1f, 0.9f },  // Motor 3
-  { 1.0f, 0.01f, 0.1f, 0.9f }   // Motor 4
+  { 1.0f, 0.01f, 0.1f, 0.9f },   // Motor 1
+  { 1.2f, 0.015f, 0.1f, 0.9f },  // Motor 2
+  { 1.3f, 0.016f, 0.1f, 0.9f },  // Motor 3
+  { 1.4f, 0.014f, 0.1f, 0.9f }   // Motor 4
 };
 
 //. WIFI Configuration Parameters
@@ -65,10 +65,10 @@ struct WifiConfig
 };
 
 static constexpr WifiConfig WIFI_CONFIG = {
-  "sakar_wifi_ssid",      // SSID
-  "sakar_wifi_password",  // Password
-  { 10, 42, 0, 1 },       // IP
-  8888                    // Port
+  "adyansh_sakar",   // SSID
+  "12345678",        // Password
+  { 10, 42, 0, 1 },  // IP
+  8888               // Port
 };
 
 //. Other Parameters
