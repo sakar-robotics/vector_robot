@@ -21,6 +21,7 @@ ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 DerivePointerBinding: false
 PointerBindsToType: true
+PointerAlignment: Middle
 ExperimentalAutoDetectBinPacking: false
 IndentCaseLabels: true
 MaxEmptyLinesToKeep: 1
