@@ -147,7 +147,7 @@ class DiffDriveControl(Node):
             'base_frame_id').get_parameter_value().string_value
         self.odom_topic = self.get_parameter(
             'odom_topic').get_parameter_value().string_value
-        self.publish_tf = self.get_parameter(
+        self.publish_tf_enabled = self.get_parameter(
             'publish_tf').get_parameter_value().bool_value
 
 # ===========================================================================
@@ -184,7 +184,9 @@ class DiffDriveControl(Node):
 
         # Limit  motor ticks per second to max ticks per second
         motor_ticks_sec_array = [
-            clip(ticks, -self.max_ticks_sec, self.max_ticks_sec) for ticks in motor_ticks_sec_array
+            int(
+                clip(ticks, -self.max_ticks_sec, self.max_ticks_sec)
+            ) for ticks in motor_ticks_sec_array
         ]
 
         # Publish motor ticks per second
@@ -230,7 +232,7 @@ class DiffDriveControl(Node):
             quaternion)
 
         # Publish TF
-        if self.publish_tf:
+        if self.publish_tf_enabled:
             self.publish_tf(self.x, self.y, quaternion)
 
         # Update last odom time

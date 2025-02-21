@@ -54,7 +54,6 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   ${PROJECT_NAME}/diff_drive_control.py
   DESTINATION lib/${PROJECT_NAME}
-  RENAME diff_drive_control
 )
 
 ament_package()

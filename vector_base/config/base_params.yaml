@@ -1,0 +1,12 @@
+diff_drive_control_node:
+  ros__parameters:
+    wheel_radius: 0.1
+    robot_width: 0.5
+    encoder_ticks_per_rev: 1000
+    max_motor_speed: 200.0
+    control_motor_frequency: 10.0
+    control_odometry_frequency: 10.0
+    odom_frame_id: "odom"
+    base_frame_id: "base_link"
+    odom_topic: "odom"
+    publish_tf: true
