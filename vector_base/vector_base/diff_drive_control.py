@@ -246,16 +246,23 @@ class DiffDriveControl(Node):
             linear: float,
             angular: float
     ) -> list[float]:
-        """Calculate the forward kinematics of a 4WD differential drive robot.
+        """
+        Calculate the forward kinematics of a 4WD differential drive robot.
 
-        Gives same wheel velocities on same side of the robot. (left and right)
+        Gives same wheel velocities on the same side of the robot (left and right).
 
-        Args:
-            linear (float): Linear velocity (m/s).
-            angular (float): Angular velocity (rad/s).
+        Args
+        ----
+        linear : float
+            Linear velocity (m/s).
+        angular : float
+            Angular velocity (rad/s).
 
-        Returns:
-            list[float]: [left_rear, left_front, right_rear, right_front] (rad/s).
+        Returns
+        -------
+        list[float]
+            [left_rear, left_front, right_rear, right_front] (rad/s).
+
         """
         # Calculate wheel angular velocities (rad/s)
         left_rear = (linear - angular * self.robot_width / 2) / self.wheel_radius
@@ -272,16 +279,25 @@ class DiffDriveControl(Node):
             right_rear_vel: float,
             right_front_vel: float
     ) -> list[float]:
-        """Calculate the inverse kinematics of a 4WD differential drive robot.
+        """
+        Calculate the inverse kinematics of a 4WD differential drive robot.
 
-        Args:
-            left_rear_vel (float): Left rear wheel velocity (rad/s).
-            left_front_vel (float): Left front wheel velocity (rad/s).
-            right_rear_vel (float): Right rear wheel velocity (rad/s).
-            right_front_vel (float): Right front wheel velocity (rad/s).
+        Args
+        ----
+        left_rear_vel : float
+            Left rear wheel velocity (rad/s).
+        left_front_vel : float
+            Left front wheel velocity (rad/s).
+        right_rear_vel : float
+            Right rear wheel velocity (rad/s).
+        right_front_vel : float
+            Right front wheel velocity (rad/s).
 
-        Returns:
-            list[float]: [linear_velocity, angular_velocity] (m/s, rad/s).
+        Returns
+        -------
+        list[float]
+            [linear_velocity, angular_velocity] (m/s, rad/s).
+
         """
         # Average wheel velocities for left and right side
         left_vel_avg = (left_rear_vel + left_front_vel) / 2
@@ -297,11 +313,12 @@ class DiffDriveControl(Node):
 # Utility Methods
 # ===========================================================================
     def calculate_wheel_angular_vel(self):
-        """Calculate the wheel angular velocity (rad/s).
+        """
+        Calculate the wheel angular velocity (rad/s).
 
         For each wheel, computes:
-            ω = (2π * Δ ticks) / (encoder_ticks_per_rev * Δt)
-        Δt is computed from the node's clock.
+            ω = (2π * Δticks) / (encoder_ticks_per_rev * Δt)
+        where Δt is computed from the node's clock.
         """
         # Get current time and compute elapsed time dt(seconds)
         current_time = self.get_clock().now()
@@ -326,6 +343,7 @@ class DiffDriveControl(Node):
     def get_quaternion_from_euler(self, roll, pitch, yaw) -> list[float]:
         """
         Convert an Euler angle to a quaternion.
+
         Assuming intrinsic rotations in Z-Y-X order (yaw, pitch, roll)
 
         Input
