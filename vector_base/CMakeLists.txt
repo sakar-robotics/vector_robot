@@ -10,21 +10,29 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(vector_interfaces REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 
-# add_executable(diff_drive_control src/diff_drive_control.cpp)
-# target_include_directories(diff_drive_control PUBLIC
-#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#   $<INSTALL_INTERFACE:include>)
-# target_compile_features(diff_drive_control PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-# ament_target_dependencies(
-#   diff_drive_control
-#   "rclcpp"
-#   "rclpy"
-#   "std_msgs"
-# )
+add_executable(diff_drive_control src/diff_drive_control.cpp)
+target_include_directories(diff_drive_control PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(diff_drive_control PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  diff_drive_control
+  "rclcpp"
+  "rclpy"
+  "std_msgs"
+  "geometry_msgs"
+  "nav_msgs"  
+  "tf2_ros"
+  "vector_interfaces"
+)
 
-# install(TARGETS diff_drive_control
-#   DESTINATION lib/${PROJECT_NAME})
+install(TARGETS diff_drive_control
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
