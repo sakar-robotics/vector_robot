@@ -10,6 +10,7 @@
   "terminal.integrated.cwd": "..",
   "git.enableCommitSigning": false,
   "editor.formatOnSave": true,
+  "clang-format.executable": "/usr/bin/clang-format",
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8",
     "editor.formatOnSave": true,
@@ -31,6 +32,10 @@
     "--ignore",
     "I201, D100"
   ],
+  "workbench.colorCustomizations": {
+    "tab.activeBorder": "#ffffff",
+    "tab.activeBackground": "#373737"
+  },
   "cSpell.words": [
     "Ackermann",
     "Adyansh",

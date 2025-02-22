@@ -60,6 +60,16 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "colcon build : CMAKE_EXPORT_COMPILE_COMMANDS",
+            "type": "shell",
+            "command": "cd ~/vector_ws && colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=YES --symlink-install",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

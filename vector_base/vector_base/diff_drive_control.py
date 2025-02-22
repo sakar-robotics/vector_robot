@@ -295,7 +295,7 @@ class DiffDriveControl(Node):
 
         Returns
         -------
-        list[float]
+        list : [float]
             [linear_velocity, angular_velocity] (m/s, rad/s).
 
         """
