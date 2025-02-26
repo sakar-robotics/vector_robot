@@ -10,7 +10,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-
+    """Launch the diff_drive_control node."""
     # Arguments
     node_language = LaunchConfiguration('node_language', default='python')
     node_language_arg = DeclareLaunchArgument(
