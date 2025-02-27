@@ -41,5 +41,35 @@
                 "isDefault": true
             }
         },
+        {
+            "label": "colcon: test",
+            "type": "shell",
+            "command": "cd ~/vector_ws && colcon test --event-handlers console_direct+",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "colcon: test-result",
+            "type": "shell",
+            "command": "cd ~/vector_ws && colcon test-result --all --verbose",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "colcon build : CMAKE_EXPORT_COMPILE_COMMANDS",
+            "type": "shell",
+            "command": "cd ~/vector_ws && colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=YES --symlink-install",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
     ]
 }
