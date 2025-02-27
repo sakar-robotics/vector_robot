@@ -2,13 +2,13 @@
 <robot name="four_wheel_robot" xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- Xacro Properties -->
   <!-- Mathematical constant -->
-  <xacro:property name="pi1" value="3.14159"/>
+  <!-- <xacro:property name="pi" value="3.14159"/> -->
   <!-- Base dimensions -->
   <xacro:property name="base_length" value="0.5"/>         <!-- Length of the base -->
   <xacro:property name="base_width" value="0.3"/>          <!-- Width of the base -->
   <xacro:property name="base_height" value="0.2"/>         <!-- Height of the base -->
   <xacro:property name="base_ground_clearance" value="0.1"/> <!-- Distance from ground to base bottom -->
-  <!-- Wheel placement (assumed symmetric) -->
+  <!-- Wheel placement (symmetric) -->
   <xacro:property name="wheel_base" value="0.4"/>          <!-- Distance between front and back wheels -->
   <xacro:property name="wheel_track" value="0.3"/>         <!-- Distance between left and right wheels -->
   <!-- Wheel dimensions -->
@@ -19,7 +19,7 @@
   <xacro:macro name="box_inertia" params="m w h d">
     <inertial>
       <!-- Orientation may be adjusted based on your modeling convention -->
-      <origin xyz="0 0 0" rpy="${pi1/2} 0 ${pi1/2}"/>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
       <mass value="${m}"/>
       <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0"
                iyy="${(m/12) * (w*w + d*d)}" iyz="0.0"
@@ -29,7 +29,7 @@
 
   <xacro:macro name="cylinder_inertia" params="m r h">
     <inertial>
-      <origin xyz="0 0 0" rpy="${pi1/2} 0 0"/>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <mass value="${m}"/>
       <inertia ixx="${(m/12) * (3*r*r + h*h)}" ixy="0" ixz="0"
                iyy="${(m/12) * (3*r*r + h*h)}" iyz="0"
@@ -66,11 +66,11 @@
        y_offset is half the wheel_track (left: positive, right: negative).
        z_offset is set so that the wheel center is at the ground level (z = wheel_radius).
   -->
-  <xacro:macro name="wheel" params="name x_offset y_offset z_offset">
+  <xacro:macro name="wheel" params="name x_offset y_offset z_offset is_right">
     <link name="${name}">
       <visual>
         <!-- Rotate the cylinder so its axis (default along z) aligns with the desired rolling axis -->
-        <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+        <origin xyz="0 0 0" rpy="0 0 ${pi/2}"/>
         <geometry>
           <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
         </geometry>
@@ -87,12 +87,18 @@
       <!-- Use cylinder_inertia for the wheel (mass = 1) -->
       <xacro:cylinder_inertia m="1" r="${wheel_radius}" h="${wheel_thickness}"/>
     </link>
-    <joint name="${name}_joint" type="fixed">
+    <joint name="${name}_joint" type="continuous">
       <parent link="base_link"/>
       <child link="${name}"/>
-      <origin xyz="${x_offset} ${y_offset} ${z_offset}" rpy="${pi1/2} 0 0"/>
+      
+      <xacro:if value="${is_right}">
+        <origin xyz="${x_offset} ${y_offset} ${z_offset}" rpy="${pi/2} 0 0"/>
+      </xacro:if>
+      <xacro:unless value="${is_right}">
+        <origin xyz="${x_offset} ${y_offset} ${z_offset}" rpy="${-pi/2} 0 ${0}"/>
+      </xacro:unless>
       <!-- Set the axis to align with the rolling direction; adjust if needed -->
-      <axis xyz="1 0 0"/>
+      <axis xyz="0 0 1"/>
       <limit effort="5.0" velocity="5.0"/>
     </joint>
   </xacro:macro>
@@ -101,9 +107,9 @@
   <!-- Front wheels: x_offset = +wheel_base/2, Rear wheels: x_offset = -wheel_base/2 -->
   <!-- Left wheels: y_offset = +wheel_track/2, Right wheels: y_offset = -wheel_track/2 -->
   <!-- z_offset is set to wheel_radius so that the wheel touches the ground -->
-  <xacro:wheel name="front_left_wheel"  x_offset="${wheel_base/2}"  y_offset="${wheel_track/2}"  z_offset="${wheel_radius}"/>
-  <xacro:wheel name="front_right_wheel" x_offset="${wheel_base/2}"  y_offset="${-wheel_track/2}" z_offset="${wheel_radius}"/>
-  <xacro:wheel name="rear_left_wheel"   x_offset="${-wheel_base/2}" y_offset="${wheel_track/2}"  z_offset="${wheel_radius}"/>
-  <xacro:wheel name="rear_right_wheel"  x_offset="${-wheel_base/2}" y_offset="${-wheel_track/2}" z_offset="${wheel_radius}"/>
+  <xacro:wheel name="front_left_wheel"  x_offset="${wheel_base/2}"  y_offset="${wheel_track/2}"  z_offset="${wheel_radius}" is_right="false"/>
+  <xacro:wheel name="front_right_wheel" x_offset="${wheel_base/2}"  y_offset="${-wheel_track/2}" z_offset="${wheel_radius}" is_right="true"/>
+  <xacro:wheel name="rear_left_wheel"   x_offset="${-wheel_base/2}" y_offset="${wheel_track/2}"  z_offset="${wheel_radius}" is_right="false"/>
+  <xacro:wheel name="rear_right_wheel"  x_offset="${-wheel_base/2}" y_offset="${-wheel_track/2}" z_offset="${wheel_radius}" is_right="true"/>
 
 </robot>

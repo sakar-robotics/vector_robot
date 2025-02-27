@@ -53,20 +53,18 @@ def generate_launch_description():
         # remappings=[('joint_states', '/joint_states')]
     )
 
-    joint_state_publisher = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        output='screen',
-        condition=IfCondition(use_rviz),
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
+    # joint_state_publisher = Node(
+    #     package='joint_state_publisher',
+    #     executable='joint_state_publisher',
+    #     output='screen',
+    #     condition=IfCondition(use_rviz),
+    # )
 
     joint_state_publisher_gui = Node(
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         output='screen',
         condition=IfCondition(use_rviz),
-        parameters=[{'use_sim_time': use_sim_time}]
     )
 
     rviz_node = Node(
@@ -123,8 +121,8 @@ def generate_launch_description():
     ld.add_action(use_rviz_arg)
     # Nodes
     ld.add_action(robot_state_publisher_node)
-    # ld.add_action(joint_state_publisher_gui)
-    ld.add_action(joint_state_publisher)
+    ld.add_action(joint_state_publisher_gui)
+    # ld.add_action(joint_state_publisher)
     ld.add_action(rviz_node)
     ld.add_action(transform_map_odom)
     ld.add_action(transform_odom_base_link)
