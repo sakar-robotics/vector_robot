@@ -1,0 +1,72 @@
+---
+# Diff Drive Plugin Topics
+# - ros_topic_name: "/cmd_vel"
+#   gz_topic_name: "/cmd_vel"
+#   ros_type_name: "geometry_msgs/msg/Twist"
+#   gz_type_name: "ignition.msgs.Twist"
+#   direction: BIDIRECTIONAL
+
+# - ros_topic_name: "/odometry/filtered"
+#   gz_topic_name: "/odometry/filtered"
+#   ros_type_name: "nav_msgs/msg/Odometry"
+#   gz_type_name: "ignition.msgs.Odometry"
+#   direction: GZ_TO_ROS
+
+# TF Topic
+# - ros_topic_name: "/tf"
+#   gz_topic_name: "/tf"
+#   ros_type_name: "tf2_msgs/msg/TFMessage"
+#   gz_type_name: "ignition.msgs.Pose_V"
+#   direction: GZ_TO_ROS
+
+# Gazebo Clock
+- ros_topic_name: "/clock"
+  gz_topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "ignition.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# Imu Plugin Topics
+- ros_topic_name: "/imu/data"
+  gz_topic_name: "/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "ignition.msgs.IMU"
+  direction: GZ_TO_ROS
+
+# Joint State Plugin Topics
+# - ros_topic_name: "/joint_states"
+#   gz_topic_name: "/joint_states"
+#   ros_type_name: "sensor_msgs/msg/JointState"
+#   gz_type_name: "ignition.msgs.Model"
+#   direction: GZ_TO_ROS
+
+# Camera Plugin Topics
+- ros_topic_name: "vector/d455/camera/camera_info"
+  gz_topic_name: "/d455/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "ignition.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "vector/d455/camera/image_raw"
+  gz_topic_name: "/d455/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "ignition.msgs.Image"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "vector/d455/depth/color/points"
+  gz_topic_name: "/d455/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "ignition.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "vector/d455/depth/image_raw"
+  gz_topic_name: "/d455/depth_image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "ignition.msgs.Image"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "battery_state"
+  gz_topic_name: "/model/vector/batterystate"
+  ros_type_name: "sensor_msgs/msg/BatteryState"
+  gz_type_name: "ignition.msgs.BatteryState"
+  direction: GZ_TO_ROS

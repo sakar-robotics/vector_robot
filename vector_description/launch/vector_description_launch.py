@@ -50,6 +50,7 @@ def generate_launch_description():
                     value_type=str
                 )
              }],
+        emulate_tty=True,
         # remappings=[('joint_states', '/joint_states')]
     )
 
