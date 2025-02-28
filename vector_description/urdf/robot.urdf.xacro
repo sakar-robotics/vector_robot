@@ -1,10 +1,14 @@
 <?xml version="1.0"?>
-<robot name="vector_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="vector"
+  xmlns:xacro="http://ros.org/wiki/xacro">
 
   <!-- Include utility macros and properties -->
   <xacro:include filename="$(find vector_description)/urdf/utils.urdf.xacro" />
 
   <!-- Include the model definition -->
   <xacro:include filename="$(find vector_description)/urdf/model.urdf.xacro" />
+
+  <!-- Include the gazebo plugins -->
+  <xacro:include filename="$(find vector_description)/urdf/gazebo.urdf.xacro" />
 
 </robot>

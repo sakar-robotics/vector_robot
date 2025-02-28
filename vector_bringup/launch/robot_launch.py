@@ -7,6 +7,7 @@ from launch.conditions import UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
@@ -29,21 +30,18 @@ def generate_launch_description():
         choices=['True', 'False'],
         description='Use simulation (Gazebo) clock if true'
     )
-
     with_rviz_arg = DeclareLaunchArgument(
         'rviz',
         default_value='False',
         choices=['True', 'False'],
         description='Launch rviz if true'
     )
-
     world_name_arg = DeclareLaunchArgument(
         'world_name',
         default_value='maze_world',
         choices=['empty', 'ionic', 'garden'],
         description='Name of the world to launch',
     )
-
     base_node_language_arg = DeclareLaunchArgument(
         'node_language',
         default_value='python',
@@ -58,6 +56,8 @@ def generate_launch_description():
         [description_pkg, 'launch', 'vector_description_launch.py'])
     gazebo_launch_file_path = PathJoinSubstitution(
         [gazebo_pkg, 'launch', 'gazebo_simulation_launch.py'])
+    rviz_config_file = PathJoinSubstitution(
+        [bringup_pkg, 'config', 'robot.rviz'])
 
     # Launch
     base_launch = IncludeLaunchDescription(
@@ -68,8 +68,24 @@ def generate_launch_description():
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_file_path),
-        launch_arguments={'world_name': world_name},
+        launch_arguments=[('world_name', world_name)],
         condition=IfCondition(use_sim_time)
+    )
+
+    description_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(description_launch_file_path),
+        launch_arguments=[('use_sim_time', use_sim_time),
+                          ('rviz', 'False')],
+    )
+
+    # Node
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='screen',
+        arguments=['-d', rviz_config_file],
+        condition=IfCondition(with_rviz),
     )
 
     ld = LaunchDescription()
@@ -80,5 +96,8 @@ def generate_launch_description():
     ld.add_action(base_node_language_arg)
     # Launch
     ld.add_action(base_launch)
-
+    ld.add_action(gazebo_launch)
+    ld.add_action(description_launch)
+    # Node
+    ld.add_action(rviz_node)
     return ld

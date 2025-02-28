@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="vector_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="vector" xmlns:xacro="http://ros.org/wiki/xacro">
     <!-- Xacro Properties -->
     <!-- TODO: Use correct dimensions -->
     <!-- Base dimensions -->
@@ -11,7 +11,7 @@
     <xacro:property name="wheel_base" value="0.6" />          <!-- Distance between front and back wheels -->
     <xacro:property name="wheel_track" value="0.4" />         <!-- Distance between left and right wheels -->
     <!-- Wheel dimensions -->
-    <xacro:property name="wheel_radius" value="0.254" />   <!-- 10 inches - 0.254 meters -->
+    <xacro:property name="wheel_radius" value="0.127" />   <!-- 10 inches - 0.254 meters -->
     <xacro:property name="wheel_thickness" value="0.0635" /> <!-- 2.5 inches - 0.0635 meters -->
    
     <!-- Base Link Definition -->

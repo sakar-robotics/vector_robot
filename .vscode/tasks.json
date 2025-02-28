@@ -70,6 +70,28 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "ros2 launch",
+            "type": "shell",
+            "command": "ros2 launch ${input:package_name} ${input:executable}",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+    ],
+    "inputs": [
+        {
+            "id": "package_name",
+            "type": "promptString",
+            "description": "Enter the package name"
+        },
+        {
+            "id": "executable",
+            "type": "promptString",
+            "description": "Enter the executable name"
         }
     ]
 }
