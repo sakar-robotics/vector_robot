@@ -18,13 +18,14 @@
     <link name="base_link">
         <visual>
             <!-- Raise the base so its bottom is at ground clearance -->
-            <origin xyz="0 0 0" rpy="0 0 0" />
+            <origin xyz="0 0 0" rpy="${-pi/2} 0 0" />
             <geometry>
-                <box size="${base_length} ${base_width} ${base_height}" />
+                <!-- <box size="${base_length} ${base_width} ${base_height}" /> -->
+                <mesh filename="package://vector_description/meshes/vector_base.dae" />
             </geometry>
-            <material name="blue">
+            <!-- <material name="blue">
                 <color rgba="0 0 1 1" />
-            </material>
+            </material> -->
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />

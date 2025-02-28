@@ -18,7 +18,6 @@ def generate_launch_description():
     world_name_arg = DeclareLaunchArgument(
         'world_name',
         default_value='empty',
-        choices=['empty', 'simple'],
         description='Name of world file to load')
 
     world_name = LaunchConfiguration('world_name')

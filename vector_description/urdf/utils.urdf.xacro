@@ -65,11 +65,12 @@
         <!-- Rotate the cylinder so its axis (default along z) aligns with the desired rolling axis -->
         <origin xyz="0 0 0" rpy="0 0 ${pi/2}" />
         <geometry>
-          <cylinder radius="${wheel_radius}" length="${wheel_thickness}" />
+          <!-- <cylinder radius="${wheel_radius}" length="${wheel_thickness}" /> -->
+            <mesh filename="package://vector_description/meshes/vector_wheel.dae" />
         </geometry>
-        <material name="black">
+        <!-- <material name="black">
           <color rgba="0 0 0 1" />
-        </material>
+        </material> -->
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 1.5708 0" />

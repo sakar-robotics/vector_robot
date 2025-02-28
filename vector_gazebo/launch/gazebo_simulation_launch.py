@@ -31,12 +31,17 @@ def generate_launch_description():
         'yaw',
         default_value='0.0',
         description='Initial orientation of the robot in the world (yaw)')
+    world_name_arg = DeclareLaunchArgument(
+        'world_name',
+        default_value='empty',
+        description='Name of world file to load')
 
     # Launch Configuration
     position_x = LaunchConfiguration('x')
     position_y = LaunchConfiguration('y')
     position_z = LaunchConfiguration('z')
     orientation = LaunchConfiguration('yaw')
+    world_name = LaunchConfiguration('world_name')
 
     # Package Directories
     vector_gazebo_dir = get_package_share_directory('vector_gazebo')
@@ -76,7 +81,7 @@ def generate_launch_description():
     gz_world_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gz_world_launch_path),
         launch_arguments={
-            'world_name': 'empty',
+            'world_name': world_name,
         }.items())
 
     ld = LaunchDescription()
@@ -85,6 +90,7 @@ def generate_launch_description():
     ld.add_action(position_y_arg)
     ld.add_action(position_z_arg)
     ld.add_action(orientation_arg)
+    ld.add_action(world_name_arg)
     # Nodes
     ld.add_action(gz_spawn_entity_node)
     ld.add_action(gz_bridge_node)
