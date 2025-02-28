@@ -65,6 +65,10 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        base_footprint:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         base_link:
           Alpha: 1
           Show Axes: false
@@ -122,6 +126,8 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        base_footprint:
+          Value: true
         base_link:
           Value: true
         front_left_wheel:
@@ -142,23 +148,22 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        map:
-          odom:
-            base_link:
-              front_left_wheel:
-                {}
-              front_right_wheel:
-                {}
-              rear_left_wheel:
-                {}
-              rear_right_wheel:
-                {}
+        base_footprint:
+          base_link:
+            front_left_wheel:
+              {}
+            front_right_wheel:
+              {}
+            rear_left_wheel:
+              {}
+            rear_right_wheel:
+              {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: base_footprint
     Frame Rate: 30
   Name: root
   Tools:
@@ -216,10 +221,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8753968477249146
+      Pitch: -0.14460289478302002
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.3485631942749023
+      Yaw: 4.363570213317871
     Saved: ~
 Window Geometry:
   Camera:
