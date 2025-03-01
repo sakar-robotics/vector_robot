@@ -13,11 +13,11 @@
   direction: GZ_TO_ROS
 
 # TF Topic
-# - ros_topic_name: "/tf"
-#   gz_topic_name: "/tf"
-#   ros_type_name: "tf2_msgs/msg/TFMessage"
-#   gz_type_name: "ignition.msgs.Pose_V"
-#   direction: GZ_TO_ROS
+- ros_topic_name: "/tf"
+  gz_topic_name: "/tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
+  direction: GZ_TO_ROS
 
 # Gazebo Clock
 - ros_topic_name: "/clock"
@@ -33,12 +33,11 @@
   gz_type_name: "ignition.msgs.IMU"
   direction: GZ_TO_ROS
 # Joint State Plugin Topics
-# - ros_topic_name: "/joint_states"
-#   gz_topic_name: "/joint_states"
-#   ros_type_name: "sensor_msgs/msg/JointState"
-#   gz_type_name: "ignition.msgs.Model"
-#   direction: GZ_TO_ROS
-
+- ros_topic_name: "/joint_states"
+  gz_topic_name: "/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "ignition.msgs.Model"
+  direction: GZ_TO_ROS
 # Camera Plugin Topics
 # - ros_topic_name: "vector/d455/camera/camera_info"
 #   gz_topic_name: "/d455/camera_info"

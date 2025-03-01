@@ -58,10 +58,10 @@
       <max_linear_velocity>2.0</max_linear_velocity>
 
       <!-- Sets the minimum angular velocity. Overrides <min_velocity> if set. -->
-      <min_angular_velocity>-1.0</min_angular_velocity>
+      <min_angular_velocity>-5.0</min_angular_velocity>
 
       <!-- Sets the maximum angular velocity. Overrides <max_velocity> if set. -->
-      <max_angular_velocity>1.0</max_angular_velocity>
+      <max_angular_velocity>5.0</max_angular_velocity>
 
       <!-- Sets the minimum linear acceleration. Overrides <min_acceleration> if set. -->
       <!-- <min_linear_acceleration>0.0</min_linear_acceleration> -->

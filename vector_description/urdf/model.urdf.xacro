@@ -8,11 +8,11 @@
     <xacro:property name="base_height" value="0.2" />         <!-- Height of the base -->
     <xacro:property name="base_ground_clearance" value="0.2" /> <!-- Distance from ground to base bottom -->
     <!-- Wheel placement (symmetric) -->
-    <xacro:property name="wheel_base" value="0.6" />          <!-- Distance between front and back wheels -->
-    <xacro:property name="wheel_track" value="0.4" />         <!-- Distance between left and right wheels -->
+    <xacro:property name="wheel_base" value="0.53" />          <!-- Distance between front and back wheels -->
+    <xacro:property name="wheel_track" value="0.555" />         <!-- Distance between left and right wheels -->
     <!-- Wheel dimensions -->
     <xacro:property name="wheel_radius" value="0.127" />   <!-- 10 inches - 0.254 meters -->
-    <xacro:property name="wheel_thickness" value="0.0635" /> <!-- 2.5 inches - 0.0635 meters -->
+    <xacro:property name="wheel_thickness" value="0.05" /> <!-- 2.5 inches - 0.0635 meters -->
    
     <!-- Base Link Definition -->
     <link name="base_link">
@@ -34,14 +34,15 @@
             </geometry>
         </collision>
         <!-- Use box_inertia macro for base_link (mass = 10) -->
-        <xacro:box_inertia m="10" w="${base_width}" h="${base_height}" d="${base_length}" />
+        <xacro:box_inertia m="1" w="${base_width}" h="${base_height}" d="${base_length}" />
     </link>
 
     <!-- Base Frame Link -->
     <link name="base_footprint">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
-            
+            <geometry>
+            </geometry>
         </visual>
     </link>
 
@@ -54,13 +55,13 @@
 
     <!-- Instantiate Four Wheels -->
     <xacro:wheel name="front_left_wheel" x_offset="${wheel_base/2}" y_offset="${wheel_track/2 + wheel_thickness/2}"
-        z_offset="${-base_ground_clearance }" is_right="false" />
+        z_offset="${-base_ground_clearance + 0.02 }" is_right="false" />
     <xacro:wheel name="front_right_wheel" x_offset="${wheel_base/2}" y_offset="${-(wheel_track/2 +  wheel_thickness/2)}"
-        z_offset="${-base_ground_clearance }" is_right="true" />
+        z_offset="${-base_ground_clearance + 0.02 }" is_right="true" />
     <xacro:wheel name="rear_left_wheel" x_offset="${-wheel_base/2}" y_offset="${wheel_track/2 + wheel_thickness/2}"
-        z_offset="${-base_ground_clearance }" is_right="false" />
+        z_offset="${-base_ground_clearance + 0.02 }" is_right="false" />
     <xacro:wheel name="rear_right_wheel" x_offset="${-wheel_base/2}" y_offset="${-(wheel_track/2 +  wheel_thickness/2)}"
-        z_offset="${-base_ground_clearance }" is_right="true" />
+        z_offset="${-base_ground_clearance + 0.02 }" is_right="true" />
 
 
 

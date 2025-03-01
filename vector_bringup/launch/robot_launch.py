@@ -11,7 +11,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-
+    """Launch the robot in Gazebo and RViz."""
     # Package directories
     description_pkg = get_package_share_directory('vector_description')
     bringup_pkg = get_package_share_directory('vector_bringup')
@@ -26,7 +26,7 @@ def generate_launch_description():
 
     use_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
-        default_value='False',
+        default_value='True',
         choices=['True', 'False'],
         description='Use simulation (Gazebo) clock if true'
     )
@@ -38,7 +38,7 @@ def generate_launch_description():
     )
     world_name_arg = DeclareLaunchArgument(
         'world_name',
-        default_value='maze_world',
+        default_value='empty',
         choices=['empty', 'ionic', 'garden'],
         description='Name of the world to launch',
     )
@@ -68,7 +68,11 @@ def generate_launch_description():
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_file_path),
-        launch_arguments=[('world_name', world_name)],
+        launch_arguments=[('world_name', world_name),
+                          ('x', '0.0'),
+                          ('y', '0.0'),
+                          ('z', '1.0'),
+                          ('yaw', '0.0')],
         condition=IfCondition(use_sim_time)
     )
 
