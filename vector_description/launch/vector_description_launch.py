@@ -25,16 +25,38 @@ def generate_launch_description():
         default_value='True',
         choices=['True', 'False'],
         description='Use simulation (Gazebo) clock if true')
-
     use_rviz_arg = DeclareLaunchArgument(
         'rviz',
         default_value='True',
         choices=['True', 'False'],
         description='Launch RViz if true')
+    wheel_odom_topic_arg = DeclareLaunchArgument(
+        'wheel_odom_topic',
+        default_value='odometry/filtered',
+        description='Wheel odometry topic')
+    camera_enabled_arg = DeclareLaunchArgument(
+        'camera_enabled',
+        default_value='false',
+        choices=['True', 'False'],
+        description='Enable camera')
+    two_d_lidar_enabled_arg = DeclareLaunchArgument(
+        'two_d_lidar_enabled',
+        default_value='false',
+        choices=['True', 'False'],
+        description='Enable 2D lidar')
+    ground_truth_odometry_arg = DeclareLaunchArgument(
+        'ground_truth_odometry',
+        default_value='false',
+        choices=['True', 'False'],
+        description='Enable ground truth odometry')
 
     # Launch Configuration
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_rviz = LaunchConfiguration('rviz')
+    wheel_odom_topic = LaunchConfiguration('wheel_odom_topic')
+    camera_enabled = LaunchConfiguration('camera_enabled')
+    two_d_lidar_enabled = LaunchConfiguration('two_d_lidar_enabled')
+    ground_truth_enabled = LaunchConfiguration('ground_truth_odometry')
 
     # Nodes
     robot_state_publisher_node = Node(
@@ -45,7 +67,11 @@ def generate_launch_description():
             {'use_sim_time': use_sim_time,
                 'robot_description': ParameterValue(
                     Command(['xacro ', str(xacro_file),
-                            #  ' ', 'is_sim:=', use_sim_time
+                             ' wheel_odom_topic:=', wheel_odom_topic,
+                             ' camera_enabled:=', camera_enabled,
+                             ' two_d_lidar_enabled:=', two_d_lidar_enabled,
+                             ' ground_truth_odometry:=', ground_truth_enabled,
+                             ' is_simulation:=', use_sim_time,
                              ]),
                     value_type=str
                 )
@@ -120,6 +146,10 @@ def generate_launch_description():
     # Args
     ld.add_action(use_sim_time_arg)
     ld.add_action(use_rviz_arg)
+    ld.add_action(wheel_odom_topic_arg)
+    ld.add_action(camera_enabled_arg)
+    ld.add_action(two_d_lidar_enabled_arg)
+    ld.add_action(ground_truth_odometry_arg)
     # Nodes
     ld.add_action(robot_state_publisher_node)
     ld.add_action(joint_state_publisher_gui)

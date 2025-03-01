@@ -4,13 +4,19 @@
 
     <!-- ........................... INCLUDE PLUGINS ................................... -->
 
-    <!-- <xacro:include filename="$(find vector_description)/urdf/sensors/rgbd_camera.xacro" /> -->
-    <!-- <xacro:include filename="$(find vector_description)/urdf/sensors/battery.xacro" /> -->
+    <xacro:if value="$(arg camera_enabled)">
+        <xacro:include filename="$(find vector_description)/urdf/sensors/rgbd_camera.xacro" />
+    </xacro:if>
+
+    <xacro:if value="$(arg two_d_lidar_enabled)">
+        <xacro:include filename="$(find vector_description)/urdf/sensors/lidar.xacro" />
+    </xacro:if>
+
+    <xacro:include filename="$(find vector_description)/urdf/sensors/battery.xacro" />
     <xacro:include filename="$(find vector_description)/urdf/sensors/diff_drive.xacro" />
-    <!-- <xacro:include filename="$(find vector_description)/urdf/sensors/lidar.xacro" /> -->
-    <!-- <xacro:include filename="$(find vector_description)/urdf/sensors/imu.xacro" /> -->
-s
-        <!-- ........................... SENSOR PLUGIN ................................... -->
+    <xacro:include filename="$(find vector_description)/urdf/sensors/imu.xacro" />
+
+    <!-- ........................... SENSOR PLUGIN ................................... -->
     <gazebo>
         <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
             <render_engine>ogre2</render_engine>

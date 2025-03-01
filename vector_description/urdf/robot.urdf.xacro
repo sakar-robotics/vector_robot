@@ -2,6 +2,16 @@
 <robot name="vector"
   xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <!-- Xacro Arguments -->
+  <xacro:arg name="wheel_odom_topic" default="odometry/filtered"/>
+  <xacro:arg name="camera_enabled" default="false"/>
+  <xacro:arg name="two_d_lidar_enabled" default="false"/>
+  <xacro:arg name="ground_truth_odometry" default="false"/>
+  <xacro:arg name="is_simulation" default="true"/>
+
+  <!-- <xacro:property name="odom_topic" value="$(arg wheel_odom_topic)"/> -->
+  
+
   <!-- Include utility macros and properties -->
   <xacro:include filename="$(find vector_description)/urdf/utils.urdf.xacro" />
 
@@ -9,6 +19,8 @@
   <xacro:include filename="$(find vector_description)/urdf/model.urdf.xacro" />
 
   <!-- Include the gazebo plugins -->
-  <xacro:include filename="$(find vector_description)/urdf/gazebo.urdf.xacro" />
+  <xacro:if value="$(arg is_simulation)">
+    <xacro:include filename="$(find vector_description)/urdf/gazebo.urdf.xacro" />
+  </xacro:if>
 
 </robot>

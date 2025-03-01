@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="vector">
+<gazebo>
+  <plugin filename="ignition-gazebo-linearbatteryplugin-system" name="gz::sim::systems::LinearBatteryPlugin">
+        <!--Li-ion battery spec from LIR18650 datasheet-->
+        <!-- - `<battery_name>` name of the battery (required) -->
+        <battery_name></battery_name>
+        <!-- - `<voltage>` Initial voltage of the battery (required) -->
+        <voltage>4.2</voltage>
+        <!-- - `<open_circuit_voltage_constant_coef>` Voltage at full charge -->
+        <open_circuit_voltage_constant_coef>4.2</open_circuit_voltage_constant_coef>
+        <!-- - `<open_circuit_voltage_linear_coef>` Amount of voltage decrease when no -->
+                                    <!-- charge -->
+        <open_circuit_voltage_linear_coef>-2.0</open_circuit_voltage_linear_coef>
+        <!-- - `<initial_charge>` Initial charge of the battery (Ah) -->
+        <initial_charge>2.5</initial_charge>
+        <!-- - `<capacity>` Total charge that the battery can hold (Ah) -->
+        <capacity>2.5 </capacity>
+        <!-- - `<resistance>` Internal resistance (Ohm) -->
+        <resistance>0.07</resistance>
+        <!-- - `<smooth_current_tau>` coefficient for smoothing current [0, 1]. -->
+        <smooth_current_tau>2.0</smooth_current_tau>
+        <soc_threshold>0.51</soc_threshold>
+        <!-- Consumer-specific -->
+        <!-- - `<power_load>` power load on battery (required) (Watts) -->
+        <power_load>2.1</power_load>
+        <start_on_motion>true</start_on_motion>
+        <!-- - `<enable_recharge>` If true, the battery can be recharged -->
+        <enable_recharge>true</enable_recharge>
+        <!-- - `<recharge_by_topic>` If true, the start/stop signals for recharging the -->
+                            <!-- battery will also be available via topics. The -->
+                            <!-- regular Ignition services will still be available. -->
+        <recharge_by_topic>true</recharge_by_topic>
+         <!-- - `<charging_time>` Hours taken to fully charge the battery. -->
+                 <!-- (Required if `<enable_recharge>` is set to true) -->
+        <charging_time>0.1</charging_time>
+        <!-- - `<power_draining_topic>` A topic that is used to start battery -->
+        <!-- <power_draining_topic>/power_drain</power_draining_topic> -->
+        <!-- - `<stop_power_draining_topic>` A topic that is used to stop battery -->
+        <!-- <stop_power_draining_topic>/stop_power_drain</stop_power_draining_topic> -->
+    </plugin>
+</gazebo>
+</robot>
+ 
