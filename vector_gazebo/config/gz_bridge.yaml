@@ -28,7 +28,7 @@
 
 # Imu Plugin Topics
 - ros_topic_name: "/imu/data"
-  gz_topic_name: "/imu"
+  gz_topic_name: "/imu/data"
   ros_type_name: "sensor_msgs/msg/Imu"
   gz_type_name: "ignition.msgs.IMU"
   direction: GZ_TO_ROS
@@ -38,33 +38,41 @@
   ros_type_name: "sensor_msgs/msg/JointState"
   gz_type_name: "ignition.msgs.Model"
   direction: GZ_TO_ROS
+
 # Camera Plugin Topics
-# - ros_topic_name: "vector/d455/camera/camera_info"
-#   gz_topic_name: "/d455/camera_info"
-#   ros_type_name: "sensor_msgs/msg/CameraInfo"
-#   gz_type_name: "ignition.msgs.CameraInfo"
-#   direction: GZ_TO_ROS
+- ros_topic_name: "/camera/camera_info"
+  gz_topic_name: "/camera/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "ignition.msgs.CameraInfo"
+  direction: GZ_TO_ROS
 
-# - ros_topic_name: "vector/d455/camera/image_raw"
-#   gz_topic_name: "/d455/image"
-#   ros_type_name: "sensor_msgs/msg/Image"
-#   gz_type_name: "ignition.msgs.Image"
-#   direction: GZ_TO_ROS
+- ros_topic_name: "/camera/image_raw"
+  gz_topic_name: "/camera/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "ignition.msgs.Image"
+  direction: GZ_TO_ROS
 
-# - ros_topic_name: "vector/d455/depth/color/points"
-#   gz_topic_name: "/d455/points"
-#   ros_type_name: "sensor_msgs/msg/PointCloud2"
-#   gz_type_name: "ignition.msgs.PointCloudPacked"
-#   direction: GZ_TO_ROS
+- ros_topic_name: "/camera/depth/color/points"
+  gz_topic_name: "/camera/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "ignition.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
 
-# - ros_topic_name: "vector/d455/depth/image_raw"
-#   gz_topic_name: "/d455/depth_image"
-#   ros_type_name: "sensor_msgs/msg/Image"
-#   gz_type_name: "ignition.msgs.Image"
-#   direction: GZ_TO_ROS
+- ros_topic_name: "/camera/depth/image_raw"
+  gz_topic_name: "/camera/depth_image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "ignition.msgs.Image"
+  direction: GZ_TO_ROS
 
-# - ros_topic_name: "battery_state"
-#   gz_topic_name: "/model/vector/batterystate"
-#   ros_type_name: "sensor_msgs/msg/BatteryState"
-#   gz_type_name: "ignition.msgs.BatteryState"
-#   direction: GZ_TO_ROS
+# Laser Plugin Topics
+- ros_topic_name: "/scan"
+  gz_topic_name: "/scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "ignition.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/scan/points"
+  gz_topic_name: "/scan/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "ignition.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS

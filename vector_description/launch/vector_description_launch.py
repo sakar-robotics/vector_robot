@@ -36,17 +36,17 @@ def generate_launch_description():
         description='Wheel odometry topic')
     camera_enabled_arg = DeclareLaunchArgument(
         'camera_enabled',
-        default_value='false',
+        default_value='True',
         choices=['True', 'False'],
         description='Enable camera')
     two_d_lidar_enabled_arg = DeclareLaunchArgument(
         'two_d_lidar_enabled',
-        default_value='false',
+        default_value='True',
         choices=['True', 'False'],
         description='Enable 2D lidar')
     ground_truth_odometry_arg = DeclareLaunchArgument(
         'ground_truth_odometry',
-        default_value='false',
+        default_value='True',
         choices=['True', 'False'],
         description='Enable ground truth odometry')
 
@@ -121,7 +121,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='odom_to_base_link',
         arguments=[
-                '--x', '0', '--y', '0', '--z', '0',
+                '--x', '0', '--y', '0', '--z', '0.3',
                 '--roll', '0', '--pitch', '0', '--yaw', '0',
                 '--frame-id', 'odom', '--child-frame-id', 'base_link'
         ],

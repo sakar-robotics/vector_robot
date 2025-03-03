@@ -20,7 +20,7 @@ def generate_launch_description():
 
     # Launch configuration and arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
-    with_rviz = LaunchConfiguration('rviz')
+    with_rviz = LaunchConfiguration('viz')
     world_name = LaunchConfiguration('world_name')
     base_node_language = LaunchConfiguration('node_language')
 
@@ -31,15 +31,15 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true'
     )
     with_rviz_arg = DeclareLaunchArgument(
-        'rviz',
-        default_value='False',
+        'viz',
+        default_value='True',
         choices=['True', 'False'],
         description='Launch rviz if true'
     )
     world_name_arg = DeclareLaunchArgument(
         'world_name',
         default_value='empty',
-        choices=['empty', 'ionic', 'garden'],
+        choices=['empty', 'ionic', 'garden', 'maze_world'],
         description='Name of the world to launch',
     )
     base_node_language_arg = DeclareLaunchArgument(
@@ -79,7 +79,11 @@ def generate_launch_description():
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_file_path),
         launch_arguments=[('use_sim_time', use_sim_time),
-                          ('rviz', 'False')],
+                          ('rviz', 'False'),
+                          ('wheel_odom_topic', 'odometry/filtered'),
+                          ('camera_enabled', 'True'),
+                          ('two_d_lidar_enabled', 'True'),
+                          ('ground_truth_odometry', 'False')],
     )
 
     # Node
@@ -89,7 +93,7 @@ def generate_launch_description():
         name='rviz2',
         output='screen',
         arguments=['-d', rviz_config_file],
-        condition=IfCondition(with_rviz),
+        condition=IfCondition(with_rviz)
     )
 
     ld = LaunchDescription()

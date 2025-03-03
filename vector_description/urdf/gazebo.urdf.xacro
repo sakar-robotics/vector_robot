@@ -12,7 +12,7 @@
         <xacro:include filename="$(find vector_description)/urdf/sensors/lidar.xacro" />
     </xacro:if>
 
-    <xacro:include filename="$(find vector_description)/urdf/sensors/battery.xacro" />
+    <!-- <xacro:include filename="$(find vector_description)/urdf/sensors/battery.xacro" /> -->
     <xacro:include filename="$(find vector_description)/urdf/sensors/diff_drive.xacro" />
     <xacro:include filename="$(find vector_description)/urdf/sensors/imu.xacro" />
 

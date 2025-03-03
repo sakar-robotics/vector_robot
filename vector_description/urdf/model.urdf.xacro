@@ -37,20 +37,15 @@
         <xacro:box_inertia m="1" w="${base_width}" h="${base_height}" d="${base_length}" />
     </link>
 
-    <!-- Base Frame Link -->
+    <!-- Base Footprint Link -->
     <link name="base_footprint">
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0" />
-            <geometry>
-            </geometry>
-        </visual>
     </link>
 
-    <!-- Base Joint -->
+    <!-- Base Footprint Joint -->
     <joint name="base_link_joint" type="fixed">
-        <parent link="base_footprint" />
-        <child link="base_link" />
-        <origin xyz="0 0 ${base_ground_clearance + base_height/2}" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="base_footprint" />
+        <origin xyz="0 0 ${-(base_ground_clearance + base_height/2)}" rpy="0 0 0" />
     </joint>
 
     <!-- Instantiate Four Wheels -->
