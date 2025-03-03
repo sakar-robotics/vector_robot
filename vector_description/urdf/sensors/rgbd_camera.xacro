@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="vector">
+    <!-- RGBD Camera Link -->
+    <link name="camera_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.01"/>
+            <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.05 0.05 0.01"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.05 0.05 0.01"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- RGBD Camera Joint  -->
+    <joint name="camera_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="camera_link"/>
+        <origin xyz="${(base_length/2 + 0.005)} 0 ${(base_height/2 + 0.05)}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- RGBD Camera Sensor -->
+    <gazebo reference="camera_link">
+        <sensor type="rgbd_camera" name="camera">
+            <!-- Update rate in Hz -->
+            <update_rate>30.0</update_rate>
+
+            <!-- Topic for publishing RGBD camera data -->
+            <topic>camera</topic>
+
+            <!-- Frame ID for the sensor -->
+            <ignition_frame_id>camera_link</ignition_frame_id>
+
+            <camera>
+                <!-- Horizontal field of view in radians -->
+                <horizontal_fov>1.92</horizontal_fov>
+
+                <image>
+                    <!-- Image width in pixels -->
+                    <width>640</width>
+
+                    <!-- Image height in pixels -->
+                    <height>480</height>
+
+                    <!-- Image format -->
+                    <format>R8G8B8</format>
+                </image>
+
+                <clip>
+                    <!-- Near clipping distance in meters -->
+                    <near>0.02</near>
+
+                    <!-- Far clipping distance in meters -->
+                    <far>100</far>
+                </clip>
+            </camera>
+
+            <depth_camera>
+                <!-- Depth camera far clipping distance in meters -->
+                <depth_far_clip>100.0</depth_far_clip>
+
+                <!-- Depth camera near clipping distance in meters -->
+                <depth_near_clip>0.02</depth_near_clip>
+            </depth_camera>
+
+            <!-- Frame ID the camera_info message header is expressed -->
+            <!-- <optical_frame_id>d455_optical_frame</optical_frame_id> -->
+
+            <!-- The number of channels (x, y, z, rgba, ...) in the point cloud -->
+            <!-- <channels>4</channels> -->
+
+            <!-- Noise added to sensor data -->
+            <noise>
+                <type>gaussian</type>
+                <mean>0.0</mean>
+                <stddev>0.01</stddev>
+            </noise>
+
+            <!-- Anti-aliasing setting for the camera -->
+            <!-- <anti_aliasing>2</anti_aliasing> -->
+
+            <!-- Aspect ratio of the camera -->
+            <!-- <aspect_ratio>1.333</aspect_ratio> -->
+
+            <!-- Visibility mask for the camera -->
+            <!-- <visibility_mask>0xFFFFFFFF</visibility_mask> -->
+
+            <!-- Local pose of the camera -->
+            <pose>0 0 0 0 0 0</pose>
+
+            <always_on>1</always_on>
+            
+            <visualize>true</visualize>
+        </sensor>
+    </gazebo>
+</robot>

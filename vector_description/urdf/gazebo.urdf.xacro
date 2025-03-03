@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<robot name="vector"
+    xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- ........................... INCLUDE PLUGINS ................................... -->
+
+    <xacro:if value="$(arg camera_enabled)">
+        <xacro:include filename="$(find vector_description)/urdf/sensors/rgbd_camera.xacro" />
+    </xacro:if>
+
+    <xacro:if value="$(arg two_d_lidar_enabled)">
+        <xacro:include filename="$(find vector_description)/urdf/sensors/lidar.xacro" />
+    </xacro:if>
+
+    <!-- <xacro:include filename="$(find vector_description)/urdf/sensors/battery.xacro" /> -->
+    <xacro:include filename="$(find vector_description)/urdf/sensors/diff_drive.xacro" />
+    <xacro:include filename="$(find vector_description)/urdf/sensors/imu.xacro" />
+
+    <!-- ........................... SENSOR PLUGIN ................................... -->
+    <gazebo>
+        <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+            <render_engine>ogre2</render_engine>
+        </plugin>
+
+        <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu">
+        </plugin>
+
+        <plugin filename="ignition-gazebo-joint-state-publisher-system" name="ignition::gazebo::systems::JointStatePublisher">
+            <topic>joint_states</topic>
+        </plugin>
+
+    </gazebo>
+
+</robot>
