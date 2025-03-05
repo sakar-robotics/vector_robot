@@ -64,6 +64,27 @@ The file `new_colcon.meta` is provided to increase the limits for services and o
 
 Ensure PlatformIO is installed. To build and upload the firmware, press **Ctrl+Alt+U**. Verify your configuration in `configurations.hpp` before proceeding.
 
+## ESP32 Pinouts
+
+| Function       | Motor/Encoder | ESP32 Pin | Description          |
+|----------------|---------------|-----------|----------------------|
+| Motor 1 Dir    | Motor 1       | 16        | RX2                  |
+| Motor 1 PWM    | Motor 1       | 4         | D4                   |
+| Motor 2 Dir    | Motor 2       | 18        | D18                  |
+| Motor 2 PWM    | Motor 2       | 17        | TX2                  |
+| Motor 3 Dir    | Motor 3       | 21        | D21                  |
+| Motor 3 PWM    | Motor 3       | 19        | D19                  |
+| Motor 4 Dir    | Motor 4       | 23        | D23                  |
+| Motor 4 PWM    | Motor 4       | 22        | D22                  |
+| Encoder 1 A    | Encoder 1     | 14        | D14                  |
+| Encoder 1 B    | Encoder 1     | 27        | D27                  |
+| Encoder 2 A    | Encoder 2     | 26        | D26                  |
+| Encoder 2 B    | Encoder 2     | 25        | D25                  |
+| Encoder 3 A    | Encoder 3     | 33        | D33                  |
+| Encoder 3 B    | Encoder 3     | 32        | D32                  |
+| Encoder 4 A    | Encoder 4     | 35        | D35                  |
+| Encoder 4 B    | Encoder 4     | 34        | D34                  |
+
 ## Final Notes
 
 Review and adjust module-specific settings as needed to match your hardware. This README serves as a quick guide for setup, configuration, and runtime tuning of the firmware.
