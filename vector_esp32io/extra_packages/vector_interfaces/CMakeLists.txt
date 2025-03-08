@@ -8,6 +8,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   msg/MotorTicksSec.msg
   msg/LedStates.msg
   msg/PushButtonStates.msg
+  srv/ExampleService.srv
+  action/ExampleAction.action
   DEPENDENCIES
 )
 

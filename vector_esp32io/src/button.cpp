@@ -5,18 +5,20 @@ button::button(int pin)
 
 button::button(int pin, int mode)
 {
+  // Initialize parameters for debouncing and press counting.
   buttonPin     = pin;
   debounceDelay = 0;
   pressCount    = 0;
   countingMode  = COUNT_FALLING;
 
+  // Set the digital pin mode based on the provided wiring configuration.
   if (mode == INTERNAL_PULLUP || mode == INTERNAL_PULLDOWN) {
     pinMode(buttonPin, mode);
   } else if (mode == EXTERNAL_PULLUP || mode == EXTERNAL_PULLDOWN) {
-    pinMode(buttonPin, INPUT);  // External pull-up/pull-down, set as INPUT
+    pinMode(buttonPin, INPUT);  // For external pull configs, use basic input mode
   }
 
-  // Set the pressed and unpressed states based on the mode
+  // Establish the logical pressed/unpressed values according to the wiring.
   if (mode == INTERNAL_PULLDOWN || mode == EXTERNAL_PULLDOWN) {
     buttonPressedState   = HIGH;
     buttonUnpressedState = LOW;
@@ -25,6 +27,7 @@ button::button(int pin, int mode)
     buttonUnpressedState = HIGH;
   }
 
+  // Initialize state tracking with the current reading.
   prevSteadyState    = digitalRead(buttonPin);
   currentSteadyState = prevSteadyState;
   lastBouncyState    = prevSteadyState;
@@ -49,6 +52,7 @@ int button::getStateRaw(void)
 
 bool button::isPressed(void)
 {
+  // A valid press is detected when the state transitions from unpressed to pressed
   if (prevSteadyState == buttonUnpressedState && currentSteadyState == buttonPressedState)
     return true;
   else
@@ -57,6 +61,7 @@ bool button::isPressed(void)
 
 bool button::isReleased(void)
 {
+  // A valid release is detected when the state transitions from pressed to unpressed
   if (prevSteadyState == buttonPressedState && currentSteadyState == buttonUnpressedState)
     return true;
   else
@@ -80,37 +85,33 @@ void button::resetCount(void)
 
 void button::loop(void)
 {
-  // read the state of the switch/button:
+  // Sample the current state from the button pin.
   int currentState          = digitalRead(buttonPin);
   unsigned long currentTime = millis();
 
-  // check to see if you just pressed the button
-  // (i.e. the input went from LOW to HIGH), and you've waited long enough
-  // since the last press to ignore any noise:
-
-  // If the switch/button changed, due to noise or pressing:
+  // Detect raw state changes that could be due to bounce or an actual press.
   if (currentState != lastBouncyState) {
-    // reset the debouncing timer
+    // Restart the debounce timer and update the raw state.
     lastDebounceCheck = currentTime;
-    // save the the last flickerable state
-    lastBouncyState = currentState;
+    lastBouncyState   = currentState;
   }
 
+  // If the new state persists for the debounce duration, consider it stable.
   if ((currentTime - lastDebounceCheck) >= debounceDelay) {
-    // whatever the reading is at, it's been there for longer than the debounce
-    // delay, so take it as the actual current state:
-
-    // save the the steady state
+    // Update debounced state values.
     prevSteadyState    = currentSteadyState;
     currentSteadyState = currentState;
   }
 
+  // When a change in the stable state is confirmed, update the press count based on mode.
   if (prevSteadyState != currentSteadyState) {
     if (countingMode == COUNT_BOTH)
       pressCount++;
     else if (countingMode == COUNT_FALLING) {
+      // Count only falling edge transitions.
       if (prevSteadyState == HIGH && currentSteadyState == LOW) pressCount++;
     } else if (countingMode == COUNT_RISING) {
+      // Count only rising edge transitions.
       if (prevSteadyState == LOW && currentSteadyState == HIGH) pressCount++;
     }
   }

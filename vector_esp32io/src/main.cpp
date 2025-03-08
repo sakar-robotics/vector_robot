@@ -1,18 +1,23 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include "button.h"
+const int buttonPin = 4;
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+button p1(buttonPin);
+
+void setup()
+{
+  Serial.begin(115200);
+  p1.setDebounceTime(50);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
+void loop()
+{
+  p1.loop();
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  if (p1.isPressed()) {
+    Serial.println("Button pressed");
+  } else if (p1.isReleased()) {
+    Serial.println("Button released");
+  }
 }
