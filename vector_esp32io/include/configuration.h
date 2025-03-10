@@ -4,13 +4,14 @@
 namespace Config
 {
 // Relay pins
-constexpr int relayPin1 = 1;
-constexpr int relayPin2 = 2;
-constexpr int relayPin3 = 3;
+constexpr int relayPin1 = 23;
+constexpr int relayPin2 = 19;
+constexpr int relayPin3 = 18;
+constexpr int relayPin4 = 17;
 
 // Button pins
-constexpr int buttonPin1 = 5;
-constexpr int buttonPin2 = 8;
+constexpr int buttonPin1 = 4;
+constexpr int buttonPin2 = 16;
 
 //. WIFI Configuration Parameters
 struct WifiConfig
@@ -34,6 +35,10 @@ static constexpr WifiConfig WIFI_CONFIG = {
 };
 
 static constexpr int ROS_DOMAIN_ID = 20;
+
+// Uncomment one of the following transport definations as needed
+// #define USE_WIFI_TRANSPORT
+#define USE_SERIAL_TRANSPORT
 
 }  // namespace Config
 

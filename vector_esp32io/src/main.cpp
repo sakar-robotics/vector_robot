@@ -94,7 +94,7 @@ enum states
   AGENT_AVAILABLE,
   AGENT_CONNECTED,
   AGENT_DISCONNECTED
-};
+} state;
 
 //* URos support structures
 rclc_support_t support;
@@ -135,37 +135,9 @@ void led_states_callback(const void * msgin)
   bool green  = led_states_msg->green_led;
   bool orange = led_states_msg->orange_led;
 
-  // Process red LED state
-  if (prev_red_led_state != red) {
-    if (red) {
-      redLed.turnOn();
-    } else {
-      redLed.turnOff();
-    }
-  }
-
-  // Process green LED state
-  if (prev_green_led_state != green) {
-    if (green) {
-      greenLed.turnOn();
-    } else {
-      greenLed.turnOff();
-    }
-  }
-
-  // Process orange LED state
-  if (prev_orange_led_state != orange) {
-    if (orange) {
-      orangeLed.turnOn();
-    } else {
-      orangeLed.turnOff();
-    }
-  }
-
-  // (prev_red_led_state != red)    ? (red ? redLed.turnOn()    : redLed.turnOff())    : (void)0;
-  // (prev_green_led_state != green) ? (green ? greenLed.turnOn()  : greenLed.turnOff())  : (void)0;
-  // (prev_orange_led_state != orange)? (orange ? orangeLed.turnOn() : orangeLed.turnOff()) :
-  // (void)0;
+  (prev_red_led_state != red) ? (red ? redLed.turnOn() : redLed.turnOff()) : (void)0;
+  (prev_green_led_state != green) ? (green ? greenLed.turnOn() : greenLed.turnOff()) : (void)0;
+  (prev_orange_led_state != orange) ? (orange ? orangeLed.turnOn() : orangeLed.turnOff()) : (void)0;
 
   // Update previous LED states
   prev_red_led_state    = red;
@@ -178,8 +150,8 @@ void push_button_states_timer_callback(rcl_timer_t * timer, int64_t last_call_ti
   RCLC_UNUSED(last_call_time);
   if (timer != NULL) {
     // Populate the push button states message
-    push_button_states_msg.button1 = button1.getState();
-    push_button_states_msg.button2 = button2.getState();
+    push_button_states_msg.button1 = !button1.getState();
+    push_button_states_msg.button2 = !button2.getState();
 
     // Publish the push button states message
     RCSOFTCHECK(rcl_publish(&push_button_states_publisher, &push_button_states_msg, NULL));
@@ -261,4 +233,70 @@ bool destroyEntities()
   rclc_support_fini(&support);
 
   return true;
+}
+
+void setup()
+{
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(115200);
+
+  Serial.println("Starting Vector Base ESP32...");
+
+#ifdef USE_WIFI_TRANSPORT
+  // Wifi Transport initialization
+  IPAddress agent_ip = Config::WIFI_CONFIG.getAgentIP();
+  set_microros_wifi_transports(Config::WIFI_CONFIG.ssid,
+                               Config::WIFI_CONFIG.password,
+                               agent_ip,
+                               Config::WIFI_CONFIG.port);
+
+#elif defined(USE_SERIAL_TRANSPORT)
+  // Serial Transport initialization
+  set_microros_serial_transports(Serial);
+#else
+#error " No Transport defined! Please define USE_WIFI_TRANSPORT or USE_SERIAL_TRANSPORT"
+#endif
+  flashLED(3);
+  hardware_init();
+  state = WAITING_AGENT;
+  flashLED(5);
+}
+
+void loop()
+{
+  switch (state) {
+    case WAITING_AGENT:
+      EXECUTE_EVERY_N_MS(500,
+                         state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_AVAILABLE :
+                                                                               WAITING_AGENT;);
+      break;
+
+    case AGENT_AVAILABLE:
+      state = (true == create_entities()) ? AGENT_CONNECTED : WAITING_AGENT;
+
+      if (state == WAITING_AGENT) {
+        destroyEntities();
+      }
+      break;
+
+    case AGENT_CONNECTED:
+      EXECUTE_EVERY_N_MS(200,
+                         state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_CONNECTED :
+                                                                               AGENT_DISCONNECTED;);
+      if (state == AGENT_CONNECTED) {
+        // Buttons Loop
+        button1.loop();
+        button2.loop();
+
+        rclc_executor_spin_some(&executor_one, RCL_MS_TO_NS(10));
+      }
+      break;
+
+    case AGENT_DISCONNECTED:
+      destroyEntities();
+      state = WAITING_AGENT;
+      break;
+    default:
+      break;
+  }
 }
