@@ -47,8 +47,9 @@ from rcl_interfaces.srv import SetParameters
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
-from std_msgs.msg import Bool
-from std_msgs.msg import Float32
+
+from vector_interfaces.msg import LedStates
+from vector_interfaces.msg import PushButtonStates
 
 # # Constants for button and axis indices on jetson
 BUTTON_TRIANGLE = 3
@@ -86,12 +87,6 @@ class JoyControl(Node):
 
         self.joy_subscription = self.create_subscription(
             Joy, 'joy', self.joy_callback, 10)
-        self.lift_distance_sub = self.create_subscription(
-            Float32, 'lift_control/distance', self.lift_distance_callback, 10)
-        self.lift_cmd_pub = self.create_publisher(
-            Float32, 'lift_control/cmd', 10)
-        self.spray_pub = self.create_publisher(
-            Bool, 'spray_state', 10)
 
         # Client to set the teleop parameters
         self.client = self.create_client(
@@ -116,9 +111,8 @@ class JoyControl(Node):
 
         # Default values
         self.scale_value = 1.0
-        self.current_lift_distance = 0.0
 
-        self.get_logger().info('Joy subscriber node has been started')
+        self.get_logger().info('\033[93mJoy Control node started.\033[0m')
 
     def send_request(self):
         """Send a request to set the teleop parameters."""
