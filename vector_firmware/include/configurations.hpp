@@ -14,10 +14,10 @@ struct MotorDriverPins
 };
 
 static constexpr MotorDriverPins MOTOR_DRIVER_PINS[4] = {
-  {16, 4},   // Motor 1 (RX2 - MD1Dir, D4 - MD1pwm)
-  {18, 17},  // Motor 2 (D18 - MD2dir, TX2 - MD2pwm)
-  {21, 19},  // Motor 3 (D21 - MD3dir, D19 - MD3pwm)
-  {23, 22}   // Motor 4 (D23 - MD4dir, D22 - MD4pwm)
+  {22, 23},  // Motor 1 (D22 - MD1Dir, D23 - MD1pwm)
+  {17, 18},  // Motor 2 (D17 - MD2dir, D18 - MD2pwm)
+  {19, 21},  // Motor 3 (D19 - MD3dir, D21 - MD3pwm)
+  {4, 16},   // Motor 4 (D4 - MD4dir, D16 - MD4pwm)
 };
 
 //. ENCODER PINS: Encoder has two pins(A and B)

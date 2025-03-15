@@ -1,5 +1,7 @@
 #include "uros_core.hpp"
 
+#define max_motor_ticks_sec 3333
+
 //* URos support structures
 rclc_support_t support;
 rcl_allocator_t allocator;
@@ -67,11 +69,11 @@ int64_t lastCount4 = 0;
 
 enum states state = WAITING_AGENT;
 
-void control_callback(rcl_timer_t* timer, int64_t last_call_time)
+void control_callback(rcl_timer_t * timer, int64_t last_call_time)
 {
   RCLC_UNUSED(last_call_time);
 
-  if(timer != NULL) {
+  if (timer != NULL) {
     // uint64_t now           = millis();
     // float dt               = (now - last_encoder_read_time) / 1000.0f;  // Seconds
     // last_encoder_read_time = now;
@@ -108,77 +110,136 @@ void control_callback(rcl_timer_t* timer, int64_t last_call_time)
   }
 }
 
-void encoder_callback(rcl_timer_t* timer, int64_t last_call_time)
+void encoder_callback(rcl_timer_t * timer, int64_t last_call_time)
 {
   RCLC_UNUSED(last_call_time);
-  if(timer != NULL) {
+  if (timer != NULL) {
     // Populate the encoder ticks message
-    encoder_ticks_msg.motor1_encoder_ticks = encoder1.getCount();
-    encoder_ticks_msg.motor2_encoder_ticks = encoder2.getCount();
-    encoder_ticks_msg.motor3_encoder_ticks = encoder3.getCount();
-    encoder_ticks_msg.motor4_encoder_ticks = encoder4.getCount();
+    // encoder_ticks_msg.motor1_encoder_ticks = encoder1.getCount();
+    // encoder_ticks_msg.motor2_encoder_ticks = encoder2.getCount();
+    // encoder_ticks_msg.motor3_encoder_ticks = encoder3.getCount();
+    // encoder_ticks_msg.motor4_encoder_ticks = encoder4.getCount();
 
     // Publish the encoder ticks message
     RCSOFTCHECK(rcl_publish(&encoder_publisher, &encoder_ticks_msg, NULL));
   }
 }
 
-void motor_callback(const void* msgin)
+void motor_callback(const void * msgin)
 {
-  const vector_interfaces__msg__MotorTicksSec* motor_ticks_sec_msg =
-      (const vector_interfaces__msg__MotorTicksSec*)msgin;
+  const vector_interfaces__msg__MotorTicksSec * motor_ticks_sec_msg =
+    (const vector_interfaces__msg__MotorTicksSec *)msgin;
 
-  motor1_setpoint = motor_ticks_sec_msg->motor1_encoder_ticks_per_sec;
-  motor2_setpoint = motor_ticks_sec_msg->motor2_encoder_ticks_per_sec;
-  motor3_setpoint = motor_ticks_sec_msg->motor3_encoder_ticks_per_sec;
-  motor4_setpoint = motor_ticks_sec_msg->motor4_encoder_ticks_per_sec;
+  //   motor1_setpoint = motor_ticks_sec_msg->motor1_encoder_ticks_per_sec;
+  //   motor2_setpoint = motor_ticks_sec_msg->motor2_encoder_ticks_per_sec;
+  //   motor3_setpoint = motor_ticks_sec_msg->motor3_encoder_ticks_per_sec;
+  //   motor4_setpoint = motor_ticks_sec_msg->motor4_encoder_ticks_per_sec;
+
+  // Set motor speeds directly without encoder and PID
+  // Interpolate the motor ticks/sec to PWM values using map function
+
+  int motor1_ticks_sec = motor_ticks_sec_msg->motor1_encoder_ticks_per_sec;
+  int motor2_ticks_sec = motor_ticks_sec_msg->motor2_encoder_ticks_per_sec;
+  int motor3_ticks_sec = motor_ticks_sec_msg->motor3_encoder_ticks_per_sec;
+  int motor4_ticks_sec = motor_ticks_sec_msg->motor4_encoder_ticks_per_sec;
+
+  // Use absolute values to map to PWM send negative pwm if motor ticks is negative but map only in
+  // 0 -100
+  float motor1_pwm =
+    map(abs(motor1_ticks_sec), 0, max_motor_ticks_sec, 0, 100) * (motor1_ticks_sec < 0 ? -1 : 1);
+
+  float motor2_pwm =
+    map(abs(motor2_ticks_sec), 0, max_motor_ticks_sec, 0, 100) * (motor2_ticks_sec < 0 ? -1 : 1);
+
+  float motor3_pwm =
+    map(abs(motor3_ticks_sec), 0, max_motor_ticks_sec, 0, 100) * (motor3_ticks_sec < 0 ? -1 : 1);
+
+  float motor4_pwm =
+    map(abs(motor4_ticks_sec), 0, max_motor_ticks_sec, 0, 100) * (motor4_ticks_sec < 0 ? -1 : 1);
+
+  Serial.println("Motor 1 PWM: " + String(motor1_pwm) + " Motor 2 PWM: " + String(motor2_pwm) +
+                 " Motor 3 PWM: " + String(motor3_pwm) + " Motor 4 PWM: " + String(motor4_pwm));
+
+  motorSetSpeed(1, motor1_pwm);
+  motorSetSpeed(2, motor2_pwm);
+  motorSetSpeed(3, motor3_pwm);
+  motorSetSpeed(4, motor4_pwm);
+
+  //   motorSetSpeed(1,
+  //                 map(motor_ticks_sec_msg->motor1_encoder_ticks_per_sec,
+  //                     -max_motor_ticks_sec,
+  //                     max_motor_ticks_sec,
+  //                     -100,
+  //                     100));
+  //   motorSetSpeed(2,
+  //                 map(motor_ticks_sec_msg->motor2_encoder_ticks_per_sec,
+  //                     -max_motor_ticks_sec,
+  //                     max_motor_ticks_sec,
+  //                     -100,
+  //                     100));
+  //   motorSetSpeed(3,
+  //                 map(motor_ticks_sec_msg->motor3_encoder_ticks_per_sec,
+  //                     -max_motor_ticks_sec,
+  //                     max_motor_ticks_sec,
+  //                     -100,
+  //                     100));
+  //   motorSetSpeed(4,
+  //                 map(motor_ticks_sec_msg->motor4_encoder_ticks_per_sec,
+  //                     -max_motor_ticks_sec,
+  //                     max_motor_ticks_sec,
+  //                     -100,
+  //                     100));
 }
 
-bool param_callback(const Parameter* old_param, const Parameter* new_param, void* context)
+bool param_callback(const Parameter * old_param, const Parameter * new_param, void * context)
 {
   RCLC_UNUSED(context);
 
   // Check if an existing parameter is updated
-  if(old_param != NULL && new_param != NULL) {
+  if (old_param != NULL && new_param != NULL) {
     // Expect parameter name in format: "<param>_motor<index>"
     // For example: "Kp_motor1", "Ki_motor2", "Kd_motor3"
-    char param_type[3] = { 0 };
+    char param_type[3] = {0};
     int motor_index    = 0;
-    if(sscanf(new_param->name.data, "%2[^_]_motor%d", param_type, &motor_index) != 2) {
+    if (sscanf(new_param->name.data, "%2[^_]_motor%d", param_type, &motor_index) != 2) {
       return false;
     }
 
     // Create an array of PIDController pointers for easier access
-    PIDController* pidControllers[4] = { &pidMotor1, &pidMotor2, &pidMotor3, &pidMotor4 };
+    PIDController * pidControllers[4] = {&pidMotor1, &pidMotor2, &pidMotor3, &pidMotor4};
 
-    if(motor_index < 1 || motor_index > 4) {
+    if (motor_index < 1 || motor_index > 4) {
       return false;
     }
 
-    PIDController* controller = pidControllers[motor_index - 1];
+    PIDController * controller = pidControllers[motor_index - 1];
 
     // Fetch the new_value (convert to float)
     float new_val = static_cast<float>(new_param->value.double_value);
 
     // Update the appropriate tuning
-    if(strcmp(param_type, "Kp") == 0) {
+    if (strcmp(param_type, "Kp") == 0) {
       controller->setTunings(new_val, controller->getKi(), controller->getKd());
-    } else if(strcmp(param_type, "Ki") == 0) {
+    } else if (strcmp(param_type, "Ki") == 0) {
       controller->setTunings(controller->getKp(), new_val, controller->getKd());
-    } else if(strcmp(param_type, "Kd") == 0) {
+    } else if (strcmp(param_type, "Kd") == 0) {
       controller->setTunings(controller->getKp(), controller->getKi(), new_val);
     } else {
       return false;
     }
 
     // Log Kp,Ki,Kd of all controllers
-    // Serial.println("Kp_motor1: " + String(pidMotor1.getKp()) + " Ki_motor1: " + String(pidMotor1.getKi()) +
+    // Serial.println("Kp_motor1: " + String(pidMotor1.getKp()) + " Ki_motor1: " +
+    // String(pidMotor1.getKi()) +
     //                " Kd_motor1: " + String(pidMotor1.getKd()));
-    // Serial.println("Kp_motor2: " + String(pidMotor2.getKp()) + " Ki_motor2: " + String(pidMotor2.getKi()) +
+    // Serial.println("Kp_motor2: " + String(pidMotor2.getKp()) + " Ki_motor2: " +
+    // String(pidMotor2.getKi()) +
     //                " Kd_motor2: " + String(pidMotor2.getKd()));
-    // Serial.println("Kp_motor3: " + String(pidMotor3.getKp()) + " Ki_motor3: " + String(pidMotor3.getKi()) +
+    // Serial.println("Kp_motor3: " + String(pidMotor3.getKp()) + " Ki_motor3: " +
+    // String(pidMotor3.getKi()) +
     //                " Kd_motor3: " + String(pidMotor3.getKd()));
-    // Serial.println("Kp_motor4: " + String(pidMotor4.getKp()) + " Ki_motor4: " + String(pidMotor4.getKi()) +
+    // Serial.println("Kp_motor4: " + String(pidMotor4.getKp()) + " Ki_motor4: " +
+    // String(pidMotor4.getKi()) +
     //                " Kd_motor4: " + String(pidMotor4.getKd()));
 
     return true;
@@ -200,31 +261,39 @@ bool create_entities()
   RCCHECK(rclc_node_init_default(&node, "vector_base_esp", "", &support));
 
   // Create Parameter Server
-  const rclc_parameter_options_t options = { .notify_changed_over_dds     = true,
-                                             .max_params                  = 12,
-                                             .allow_undeclared_parameters = false,
-                                             .low_mem_mode                = false };
+  const rclc_parameter_options_t options = {.notify_changed_over_dds     = true,
+                                            .max_params                  = 12,
+                                            .allow_undeclared_parameters = false,
+                                            .low_mem_mode                = false};
   RCCHECK(rclc_parameter_server_init_with_option(&param_server, &node, &options));
 
   // Create Encoder Ticks Publisher
-  RCCHECK(rclc_publisher_init_default(&encoder_publisher,
-                                      &node,
-                                      ROSIDL_GET_MSG_TYPE_SUPPORT(vector_interfaces, msg, EncoderTicks),
-                                      "encoder_ticks"));  // Topic name
+  RCCHECK(
+    rclc_publisher_init_default(&encoder_publisher,
+                                &node,
+                                ROSIDL_GET_MSG_TYPE_SUPPORT(vector_interfaces, msg, EncoderTicks),
+                                "encoder_ticks"));  // Topic name
 
   // Create Motor Ticks/Sec Subscription
-  RCCHECK(rclc_subscription_init_default(&motor_subscription,
-                                         &node,
-                                         ROSIDL_GET_MSG_TYPE_SUPPORT(vector_interfaces, msg, MotorTicksSec),
-                                         "motor_ticks_sec"));  // Topic name
+  RCCHECK(rclc_subscription_init_default(
+    &motor_subscription,
+    &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(vector_interfaces, msg, MotorTicksSec),
+    "motor_ticks_sec"));  // Topic name
 
   // Create Control Timer (at 10Hz -> 1000/100)
   const unsigned int control_timer_timeout = 100;
-  RCCHECK(rclc_timer_init_default(&control_timer, &support, RCL_MS_TO_NS(control_timer_timeout), control_callback));
+  RCCHECK(rclc_timer_init_default(&control_timer,
+                                  &support,
+                                  RCL_MS_TO_NS(control_timer_timeout),
+                                  control_callback));
 
   // Create Encoder Timer (at 20Hz -> 1000/50)
   const unsigned int encoder_timer_timeout = 50;
-  RCCHECK(rclc_timer_init_default(&encoder_timer, &support, RCL_MS_TO_NS(encoder_timer_timeout), encoder_callback));
+  RCCHECK(rclc_timer_init_default(&encoder_timer,
+                                  &support,
+                                  RCL_MS_TO_NS(encoder_timer_timeout),
+                                  encoder_callback));
 
   // Create Executor ONE with 2 handles (control timer + motor subscription)
   executor_one = rclc_executor_get_zero_initialized_executor();
@@ -284,7 +353,7 @@ bool create_entities()
 
 bool destroyEntities()
 {
-  rmw_context_t* rmw_context = rcl_context_get_rmw_context(&support.context);
+  rmw_context_t * rmw_context = rcl_context_get_rmw_context(&support.context);
   (void)rmw_uros_set_context_entity_destroy_session_timeout(rmw_context, 0);
 
   rclc_executor_fini(&executor_one);
@@ -301,15 +370,15 @@ bool destroyEntities()
 
 void setup_hardware()
 {
-  encoder1.attachFullQuad(Config::ENCODER_PINS[0].A, Config::ENCODER_PINS[0].B);
-  encoder2.attachFullQuad(Config::ENCODER_PINS[1].A, Config::ENCODER_PINS[1].B);
-  encoder3.attachFullQuad(Config::ENCODER_PINS[2].A, Config::ENCODER_PINS[2].B);
-  encoder4.attachFullQuad(Config::ENCODER_PINS[3].A, Config::ENCODER_PINS[3].B);
+  //   encoder1.attachFullQuad(Config::ENCODER_PINS[0].A, Config::ENCODER_PINS[0].B);
+  //   encoder2.attachFullQuad(Config::ENCODER_PINS[1].A, Config::ENCODER_PINS[1].B);
+  //   encoder3.attachFullQuad(Config::ENCODER_PINS[2].A, Config::ENCODER_PINS[2].B);
+  //   encoder4.attachFullQuad(Config::ENCODER_PINS[3].A, Config::ENCODER_PINS[3].B);
 
-  encoder1.setCount(0);
-  encoder2.setCount(0);
-  encoder3.setCount(0);
-  encoder4.setCount(0);
+  //   encoder1.setCount(0);
+  //   encoder2.setCount(0);
+  //   encoder3.setCount(0);
+  //   encoder4.setCount(0);
 
-  // setupMCPWM();
+  setupMCPWM();
 }
