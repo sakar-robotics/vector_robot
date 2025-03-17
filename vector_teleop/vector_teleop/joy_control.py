@@ -1,39 +1,29 @@
 #!/usr/bin/env python3
 
 """
-ROS node for controlling various functionalities using a joystick.
+ROS node for controlling various functionalities using a joystick and push buttons.
 
 Overview:
-- The `JoyControl` class subscribes to joystick inputs and controls
-  different functionalities such as launching ROS 2 commands, controlling
-  a spray mechanism, adjusting scale values, and setting lift distances.
+- The JoyControl class subscribes to joystick and push button states to
+  launch ROS2 commands, adjust scale values, and perform system operations
+  (shutdown/restart). It sends service requests to update teleop parameters dynamically.
 
 Subscribers:
-- `joy` (Joy): Subscribes to joystick inputs.
-- `lift_control/distance` (Float32): Subscribes to lift distance updates.
-
-Publishers:
-- `lift_control/cmd` (Float32): Publishes lift control commands.
-- `spray_state` (Bool): Publishes spray mechanism state.
+- joy (Joy): Receives joystick input messages.
+- push_button_states (PushButtonStates): Receives push button states.
 
 Services:
-- `/teleop_node/set_parameters` (SetParameters): Sets teleop parameters.
+- /teleop_node/set_parameters (SetParameters): Updates teleop parameters.
 
 Methods:
-- `shutdown_pc_command()`: Shuts down the PC.
-- `restart_pc_command()`: Restarts the PC.
-- `launch_ros2_command()`: Launches a ROS 2 command with safety checks.
-- `launch_ros2_navigation()`: Launches a ROS 2 command for navigation.
-- `launch_ros2_mapping()`: Launches a ROS 2 command for mapping.
-- `stop_ros2_command()`: Stops the ROS 2 command.
-- `map_saver_command()`: Saves the map to the amr_navigation maps directory.
-- `activate_spray()`: Activates the spray mechanism.
-- `deactivate_spray()`: Deactivates the spray mechanism.
-- `ramp_up_scale_value()`: Increases the scale value.
-- `ramp_down_scale_value()`: Decreases the scale value.
-- `increase_lift_height()`: Increases the lift height.
-- `decrease_lift_height()`: Decreases the lift height.
-- `destroy_node()`: Cleans up resources.
+- send_request: Sends a service request to update teleop parameters.
+- handle_button/handle_button_all: Process button events including long press
+  and multi-click.
+- handle_axis: Processes D-pad axis changes.
+- joy_callback: Handles joystick inputs.
+- push_button_callback: Handles push button inputs.
+- launch_ros2_command, stop_ros2_command, shutdown_pc_command, restart_pc_command:
+  Execute ROS2 commands or system operations.
 """
 import os
 import signal
@@ -48,7 +38,6 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 
-from vector_interfaces.msg import LedStates
 from vector_interfaces.msg import PushButtonStates
 
 # # Constants for button and axis indices on jetson
@@ -64,19 +53,6 @@ PS_BUTTON = 12
 R3_BUTTON = 11
 L3_BUTTON = 10
 
-# Constants for button and axis indices on laptop
-# BUTTON_TRIANGLE = 2
-# BUTTON_CIRCLE = 1
-# BUTTON_SQUARE = 3
-# BUTTON_CROSS = 0
-# AXIS_LEFT_RIGHT = 6  # -1 for right, 1 for left: D-pad left and right
-# AXIS_UP_DOWN = 7  # -1 for down, 1 for up: D-pad up and down
-# R1_BUTTON = 5
-# L1_BUTTON = 4
-# PS_BUTTON = 10
-# R3_BUTTON = 12
-# L3_BUTTON = 11
-
 
 class JoyControl(Node):
     """Joy Control Node."""
@@ -85,8 +61,15 @@ class JoyControl(Node):
         """Initialize the JoyControl node."""
         super().__init__('joy_control')
 
+        # Parameters
+        self.declare_parameter('debug', False)
+        self.debug = self.get_parameter('debug').get_parameter_value().bool_value
+
+        # Subscribers and publishers
         self.joy_subscription = self.create_subscription(
             Joy, 'joy', self.joy_callback, 10)
+        self.push_button_subscription = self.create_subscription(
+            PushButtonStates, 'push_button_states', self.push_button_callback, 10)
 
         # Client to set the teleop parameters
         self.client = self.create_client(
@@ -98,7 +81,9 @@ class JoyControl(Node):
             BUTTON_SQUARE: 0,
             BUTTON_CROSS: 0,
             AXIS_LEFT_RIGHT: 0.0,
-            AXIS_UP_DOWN: 0.0
+            AXIS_UP_DOWN: 0.0,
+            'push_button1': 0,
+            'push_button2': 0
         }  # store the previous button states
 
         self.press_times = {}            # store the press time for each button
@@ -130,6 +115,7 @@ class JoyControl(Node):
 
         # Call the service and handle the response
         future = self.client.call_async(request)
+        future
         # future.add_done_callback(self.handle_response)
         # rclpy.spin_until_future_complete(self, future)
         # response = future.result()
@@ -151,9 +137,10 @@ class JoyControl(Node):
         except Exception as e:
             self.get_logger().error(f'Service call error: {str(e)}')
 
-    def handle_button(self, current_value, prev_value, button_name, press_callback, release_callback):
+    def handle_button(self, current_value, prev_value,
+                      button_name, press_callback, release_callback):
         """
-        *Handle the button press and release. \n
+        *Handle the button press and release.
 
         :param current_value: The current state of the button (1 for pressed, 0 for released).
         :type current_value: int
@@ -169,12 +156,16 @@ class JoyControl(Node):
         # Detect rising edge (0 -> 1) for the button
         if current_value == 1 and prev_value == 0:
             press_callback()
-            self.get_logger().info(f'{button_name} pressed')
+
+            if self.debug:
+                self.get_logger().info(f'\033[92m{button_name} pressed\033[0m')
 
         # Detect falling edge (1 -> 0) for the button
         if current_value == 0 and prev_value == 1 and release_callback:
             release_callback()
-            self.get_logger().info(f'{button_name} released')
+
+            if self.debug:
+                self.get_logger().info(f'\033[92m{button_name} released\033[0m')
 
     def handle_button_all(self, current_value, prev_value, button_name, callbacks: dict,
                           long_press_threshold=2.0, multi_click_threshold=0.7):
@@ -184,13 +175,15 @@ class JoyControl(Node):
         :param current_value: The current button state (1=pressed, 0=released).
         :param prev_value: The previous button state.
         :param button_name: Name of the button for logging.
-        :param callbacks: Dictionary with callback functions for: \n
-            - single_press 
+        :param callbacks: Dictionary with callback functions for:
+            - single_press
             - long press
             - double_click
             - triple_click
-        :param long_press_threshold: Duration threshold for long press detection (default=2.0 seconds).
-        :param multi_click_threshold: Duration threshold for multi-click detection (default=0.7 seconds).
+        :param long_press_threshold: Duration threshold for long press detection
+        (default=2.0 seconds).
+        :param multi_click_threshold: Duration threshold for multi-click detection
+        (default=0.7 seconds).
 
         Example:
         ```python
@@ -227,8 +220,10 @@ class JoyControl(Node):
             if press_duration >= long_press_threshold:
                 if 'long_press' in callbacks and not self.callback_invoked[button_name]:
                     callbacks['long_press']()  # Trigger long press callback
-                    self.get_logger().info(
-                        f'{button_name} long press detected')
+
+                    if self.debug:
+                        self.get_logger().info(
+                            f'{button_name} long press detected')
                     self.callback_invoked[button_name] = True
                 # Reset click count after long press
                 self.click_counts[button_name] = 0
@@ -242,21 +237,24 @@ class JoyControl(Node):
                     )
 
     def process_click(self, button_name, callbacks):
-        """ Handle multi-click actions after multi-click threshold expires. """
+        """Handle multi-click actions after multi-click threshold expires."""
         if self.click_counts[button_name] == 1:
             if 'single_press' in callbacks:
                 callbacks['single_press']()  # Trigger single press event
-                self.get_logger().info(f'{button_name} single press detected')
+                if self.debug:
+                    self.get_logger().info(f'{button_name} single press detected')
 
         elif self.click_counts[button_name] == 2:
             if 'double_click' in callbacks:
                 callbacks['double_click']()  # Trigger double click event
-                self.get_logger().info(f'{button_name} double click detected')
+                if self.debug:
+                    self.get_logger().info(f'{button_name} double click detected')
 
         elif self.click_counts[button_name] == 3:
             if 'triple_click' in callbacks:
                 callbacks['triple_click']()  # Trigger triple click event
-                self.get_logger().info(f'{button_name} triple click detected')
+                if self.debug:
+                    self.get_logger().info(f'{button_name} triple click detected')
 
         # Reset click count after processing
         self.click_counts[button_name] = 0
@@ -264,10 +262,10 @@ class JoyControl(Node):
         self.multi_click_timers[button_name].destroy()
         del self.multi_click_timers[button_name]
 
-    def handle_axis(self, current_value, prev_value, axis_name, positive_callback, negative_callback):
+    def handle_axis(self, current_value, prev_value,
+                    axis_name, positive_callback, negative_callback):
         """
-        *This method detects the rising edge transitions for the specified axis and
-        *triggers the corresponding callbacks.\n
+        *Handle the axis press and release.
 
         :param current_value: The current value of the axis.
         :type current_value: int
@@ -307,13 +305,6 @@ class JoyControl(Node):
         button_left_right = msg.axes[AXIS_LEFT_RIGHT]
         button_up_down = msg.axes[AXIS_UP_DOWN]
 
-        self.handle_button(button_square,
-                           self.prev_buttons[BUTTON_SQUARE],
-                           'Square_button',
-                           self.activate_spray,
-                           self.deactivate_spray
-                           )
-
         self.handle_axis(button_left_right,
                          self.prev_buttons[AXIS_LEFT_RIGHT],
                          'Left_right_axis',
@@ -321,20 +312,11 @@ class JoyControl(Node):
                          self.ramp_up_scale_value
                          )
 
-        self.handle_axis(button_up_down,
-                         self.prev_buttons[AXIS_UP_DOWN],
-                         'Up_down_axis',
-                         self.increase_lift_height,
-                         self.decrease_lift_height
-                         )
-
         self.handle_button_all(button_triangle,
                                self.prev_buttons.get(BUTTON_TRIANGLE, 0),
                                'Triangle_button',
                                callbacks={
                                    'single_press': self.launch_ros2_command,
-                                   'double_click': self.launch_ros2_navigation,
-                                   'triple_click': self.launch_ros2_mapping,
                                    'long_press': self.shutdown_pc_command,
                                },
                                long_press_threshold=2.0,
@@ -351,15 +333,6 @@ class JoyControl(Node):
                                long_press_threshold=2.0,
                                multi_click_threshold=0.7
                                )
-        self.handle_button_all(button_cross,
-                               self.prev_buttons.get(BUTTON_CROSS, 0),
-                               'Cross_button',
-                               callbacks={
-                                   'single_press': self.map_saver_command,
-                               },
-                               long_press_threshold=2.0,
-                               multi_click_threshold=0.7
-                               )
 
         # Store the previous button states
         self.prev_buttons[BUTTON_TRIANGLE] = button_triangle
@@ -368,6 +341,39 @@ class JoyControl(Node):
         self.prev_buttons[AXIS_LEFT_RIGHT] = button_left_right
         self.prev_buttons[BUTTON_SQUARE] = button_square
         self.prev_buttons[AXIS_UP_DOWN] = button_up_down
+
+    def push_button_callback(self, msg: PushButtonStates):
+        """Handle push button states."""
+        # Convert boolean to integer (1 if pressed, 0 if not)
+        push1 = 1 if msg.button1 else 0
+        push2 = 1 if msg.button2 else 0
+
+        self.handle_button_all(
+            push1,
+            self.prev_buttons.get('push_button1', 0),
+            'Push_Button_1',
+            callbacks={
+                'single_press': self.launch_ros2_command,
+                'long_press': self.shutdown_pc_command,
+            },
+            long_press_threshold=2.0,
+            multi_click_threshold=0.7
+        )
+        self.handle_button_all(
+            push2,
+            self.prev_buttons.get('push_button2', 0),
+            'Push_Button_2',
+            callbacks={
+                'single_press': self.stop_ros2_command,
+                'long_press': self.restart_pc_command,
+            },
+            long_press_threshold=2.0,
+            multi_click_threshold=0.7
+        )
+
+        # Update previous states for the push buttons
+        self.prev_buttons['push_button1'] = push1
+        self.prev_buttons['push_button2'] = push2
 
     def shutdown_pc_command(self):
         """Shutdown the PC."""
@@ -395,8 +401,8 @@ class JoyControl(Node):
         self.get_logger().info('Launching ROS 2 command')
         try:
             self.process = subprocess.Popen(
-                ['ros2', 'launch', 'amr_bringup',
-                    'robot.launch.py', 'use_sim_time:=False', 'with_joy_launch:=True'],
+                ['ros2', 'launch', 'vector_bringup',
+                    'robot.launch.py', 'use_sim_time:=False'],
                 preexec_fn=os.setsid  # Set the process group ID
             )
             self.get_logger().info('ROS 2 command launched successfully.')
@@ -421,29 +427,6 @@ class JoyControl(Node):
             self.process = None
         else:
             self.get_logger().warn('No ROS 2 command is currently running.')
-
-    def map_saver_command(self):
-        """Save the map to the amr_navigation maps directory."""
-        # Define the map filename
-        timestamp = int(time.time())
-        map_filename = f'map_{timestamp}'
-        map_directory = os.path.expanduser('~/amr_ws/src/amr_navigation/map')
-        map_path = os.path.join(map_directory, map_filename)
-
-        # Ensure the map directory exists
-        os.makedirs(map_directory, exist_ok=True)
-
-        # Run the map saver command
-        self.get_logger().info(f'Saving map to {map_path}.yaml')
-        try:
-            subprocess.run(
-                ['ros2', 'run', 'nav2_map_server',
-                    'map_saver_cli', '-f', map_path, '-t', 'map'],
-                check=True
-            )
-            self.get_logger().info(f'Map saved to {map_path}.yaml')
-        except subprocess.CalledProcessError as e:
-            self.get_logger().error(f'Failed to save map: {e}')
 
     def ramp_up_scale_value(self):
         """Increase the scale value."""
