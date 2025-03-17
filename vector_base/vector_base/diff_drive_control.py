@@ -265,8 +265,8 @@ class DiffDriveControl(Node):
 
         """
         # Calculate wheel angular velocities (rad/s)
-        left_rear = (linear - angular * self.robot_width / 2) / self.wheel_radius
-        left_front = (linear - angular * self.robot_width / 2) / self.wheel_radius
+        left_rear = -(linear - angular * self.robot_width / 2) / self.wheel_radius
+        left_front = -(linear - angular * self.robot_width / 2) / self.wheel_radius
         right_rear = (linear + angular * self.robot_width / 2) / self.wheel_radius
         right_front = (linear + angular * self.robot_width / 2) / self.wheel_radius
 

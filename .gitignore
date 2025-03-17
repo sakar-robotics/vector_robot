@@ -1,2 +1,6 @@
 .pio
 /vector_firmware/.vscode/
+vector_esp32io/vector_esp32io/.vscode/extensions.json
+vector_esp32io/vector_esp32io/.gitignore
+vector_esp32io/.vscode/extensions.json
+vector_esp32io/.vscode/settings.json
