@@ -37,5 +37,9 @@ install(PROGRAMS
   ${PROJECT_NAME}/led_control.py
   DESTINATION lib/${PROJECT_NAME}
 )
+install(PROGRAMS
+  ${PROJECT_NAME}/imu_bno.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()

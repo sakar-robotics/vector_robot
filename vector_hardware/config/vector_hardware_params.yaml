@@ -2,3 +2,9 @@ led_control:
   ros__parameters:
     debug: false
     cmd_vel_topic: "cmd_vel"
+
+imu_bno:
+  ros__parameters:
+    publish_mag: false
+    publish_diagnostic: false
+    publish_tf: false

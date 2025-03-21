@@ -20,7 +20,15 @@ def generate_launch_description():
         parameters=[base_params_file]
     )
 
+    imu_bn008_node = Node(
+        package='vector_hardware',
+        executable='imu_bno.py',
+        name='imu_bno',
+        parameters=[base_params_file]
+    )
+
     ld = LaunchDescription()
     # Nodes
     ld.add_action(led_control_node)
+    ld.add_action(imu_bn008_node)
     return ld
