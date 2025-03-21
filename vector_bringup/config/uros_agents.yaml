@@ -1,0 +1,20 @@
+# This YAML file defines the transport parameters and flags for each agent.
+esp32_base_serial:
+  enable: true # Set to false if you want to disable this node
+  transport: "serial"
+  port: "/dev/serial/by-id/usb-Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_ac2e1ed5dc5aee118b5b6f0090fcc75d-if00-port0"
+  baudrate: "115200"
+  verbose_level: "4"
+
+esp32_io_serial:
+  enable: true # Set to false to disable this node
+  transport: "serial"
+  port: "/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0"
+  baudrate: "115200"
+  verbose_level: "4"
+
+esp32_udp:
+  enable: false # Set to true to enable UDP transport and disable serial nodes if desired.
+  transport: "udp4"
+  port: "8888"
+  verbose_level: "4"

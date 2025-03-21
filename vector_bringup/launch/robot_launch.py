@@ -9,45 +9,56 @@ from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
 
+ARGUMENTS = [
+    DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='False',
+        choices=['True', 'False'],
+        description='Use simulation (Gazebo) clock if true'
+    ),
+    DeclareLaunchArgument(
+        'viz',
+        default_value='False',
+        choices=['True', 'False'],
+        description='Launch rviz if true'
+    ),
+    DeclareLaunchArgument(
+        'world_name',
+        default_value='empty',
+        choices=['empty', 'ionic', 'garden', 'maze_world'],
+        description='Name of the world to launch',
+    ),
+    DeclareLaunchArgument(
+        'node_language',
+        default_value='python',
+        choices=['python', 'cpp'],
+        description='Choose implementation language for diff_drive_control node (python or cpp)'
+    ),
+    DeclareLaunchArgument(
+        'uros_agent',
+        default_value='True',
+        choices=['True', 'False'],
+        description='Launch uros agents if true'
+    )
+
+]
+
 
 def generate_launch_description():
     """Launch the robot in Gazebo and RViz."""
-    # Package directories
-    description_pkg = get_package_share_directory('vector_description')
-    bringup_pkg = get_package_share_directory('vector_bringup')
-    gazebo_pkg = get_package_share_directory('vector_gazebo')
-    base_pkg = get_package_share_directory('vector_base')
-
     # Launch configuration and arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
     with_rviz = LaunchConfiguration('viz')
     world_name = LaunchConfiguration('world_name')
     base_node_language = LaunchConfiguration('node_language')
+    uros_agent = LaunchConfiguration('uros_agent')
 
-    use_sim_time_arg = DeclareLaunchArgument(
-        'use_sim_time',
-        default_value='True',
-        choices=['True', 'False'],
-        description='Use simulation (Gazebo) clock if true'
-    )
-    with_rviz_arg = DeclareLaunchArgument(
-        'viz',
-        default_value='True',
-        choices=['True', 'False'],
-        description='Launch rviz if true'
-    )
-    world_name_arg = DeclareLaunchArgument(
-        'world_name',
-        default_value='empty',
-        choices=['empty', 'ionic', 'garden', 'maze_world'],
-        description='Name of the world to launch',
-    )
-    base_node_language_arg = DeclareLaunchArgument(
-        'node_language',
-        default_value='python',
-        choices=['python', 'cpp'],
-        description='Choose implementation language for diff_drive_control node (python or cpp)'
-    )
+    # Package directories
+    description_pkg = get_package_share_directory('vector_description')
+    bringup_pkg = get_package_share_directory('vector_bringup')
+    gazebo_pkg = get_package_share_directory('vector_gazebo')
+    base_pkg = get_package_share_directory('vector_base')
+    hardware_pkg = get_package_share_directory('vector_hardware')
 
     # File paths
     base_launch_file_path = PathJoinSubstitution(
@@ -56,6 +67,11 @@ def generate_launch_description():
         [description_pkg, 'launch', 'vector_description_launch.py'])
     gazebo_launch_file_path = PathJoinSubstitution(
         [gazebo_pkg, 'launch', 'gazebo_simulation_launch.py'])
+    hardware_launch_file_path = PathJoinSubstitution(
+        [hardware_pkg, 'launch', 'hardware_launch.py'])
+    uros_launch_file_path = PathJoinSubstitution(
+        [bringup_pkg, 'launch', 'uros_agents_launch.py'])
+
     rviz_config_file = PathJoinSubstitution(
         [bringup_pkg, 'config', 'robot.rviz'])
 
@@ -86,6 +102,16 @@ def generate_launch_description():
                           ('ground_truth_odometry', 'False')],
     )
 
+    hardware_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(hardware_launch_file_path),
+        condition=UnlessCondition(use_sim_time)
+    )
+
+    uros_agent_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(uros_launch_file_path),
+        condition=IfCondition(uros_agent)
+    )
+
     # Node
     rviz_node = Node(
         package='rviz2',
@@ -96,16 +122,13 @@ def generate_launch_description():
         condition=IfCondition(with_rviz)
     )
 
-    ld = LaunchDescription()
-    # Arguments
-    ld.add_action(use_sim_time_arg)
-    ld.add_action(with_rviz_arg)
-    ld.add_action(world_name_arg)
-    ld.add_action(base_node_language_arg)
+    ld = LaunchDescription(ARGUMENTS)
     # Launch
     ld.add_action(base_launch)
     ld.add_action(gazebo_launch)
     ld.add_action(description_launch)
+    ld.add_action(hardware_launch)
+    ld.add_action(uros_agent_launch)
     # Node
     ld.add_action(rviz_node)
     return ld
