@@ -151,7 +151,7 @@ class DiffDriveControl(Node):
             'publish_tf').get_parameter_value().bool_value
 
 # ===========================================================================
-# ROS2 Interface Methods
+# ===================== ROS2 Interface Methods ==============================
 # ===========================================================================
     def encoder_ticks_callback(self, msg: EncoderTicks):
         """Update the encoder ticks."""
@@ -169,7 +169,7 @@ class DiffDriveControl(Node):
         self.current_cmd_vel[1] = msg.angular.z
 
 # ===========================================================================
-# Control Methods
+# ======================== Control Loop Methods =============================
 # ===========================================================================
     def control_motor(self) -> None:
         """Control loop to calculate motor ticks per second."""
@@ -239,7 +239,7 @@ class DiffDriveControl(Node):
         self.last_odom_time = current_time
 
 # ===========================================================================
-# Kinematics Methods
+# ===================== Kinematics Methods =================================
 # ===========================================================================
     def forward_kinematics(
             self,
@@ -310,7 +310,7 @@ class DiffDriveControl(Node):
         return [linear_x, angular_z]
 
 # ===========================================================================
-# Utility Methods
+# ===================== Utility Methods =====================================
 # ===========================================================================
     def calculate_wheel_angular_vel(self):
         """
@@ -364,8 +364,9 @@ class DiffDriveControl(Node):
             sin(roll / 2) * sin(pitch / 2) * sin(yaw / 2)
 
         return [qx, qy, qz, qw]
+
 # ===========================================================================
-# Publishing Methods
+# ===================== ROS2 Publishing Methods =============================
 # ===========================================================================
 
     def publish_odometry(
