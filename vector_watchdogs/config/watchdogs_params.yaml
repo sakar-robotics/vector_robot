@@ -1,0 +1,6 @@
+diagnostics_jtop:
+  ros__parameters:
+    interval: 0.5
+    level_error: 60
+    level_warning: 40
+    level_ok: 20
