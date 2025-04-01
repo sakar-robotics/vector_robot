@@ -240,8 +240,6 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
 
-  Serial.println("Starting Vector Base ESP32...");
-
 #ifdef USE_WIFI_TRANSPORT
   // Wifi Transport initialization
   IPAddress agent_ip = Config::WIFI_CONFIG.getAgentIP();
@@ -256,7 +254,6 @@ void setup()
 #else
 #error " No Transport defined! Please define USE_WIFI_TRANSPORT or USE_SERIAL_TRANSPORT"
 #endif
-  flashLED(3);
   hardware_init();
   state = WAITING_AGENT;
   flashLED(5);
@@ -267,7 +264,7 @@ void loop()
   switch (state) {
     case WAITING_AGENT:
       EXECUTE_EVERY_N_MS(500,
-                         state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_AVAILABLE :
+                         state = (RMW_RET_OK == rmw_uros_ping_agent(200, 1)) ? AGENT_AVAILABLE :
                                                                                WAITING_AGENT;);
       break;
 

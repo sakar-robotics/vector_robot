@@ -3,6 +3,10 @@
 #ifndef CONFIGURATIONS_HPP_
 #define CONFIGURATIONS_HPP_
 
+// Uncomment one of the following transport definations as needed
+// #define USE_WIFI_TRANSPORT
+#define USE_SERIAL_TRANSPORT
+
 namespace Config
 {
 

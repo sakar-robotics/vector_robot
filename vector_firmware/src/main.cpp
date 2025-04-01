@@ -6,17 +6,10 @@
 #include "configurations.hpp"
 #include "uros_core.hpp"
 
-// Uncomment one of the following transport definations as needed
-// #define USE_WIFI_TRANSPORT
-#define USE_SERIAL_TRANSPORT
-
 void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
-
-  Serial.println("Starting Vector Base ESP32...");
-
 #ifdef USE_WIFI_TRANSPORT
   // Wifi Transport initialization
   IPAddress agent_ip = Config::WIFI_CONFIG.getAgentIP();
@@ -27,16 +20,12 @@ void setup()
 
 #elif defined(USE_SERIAL_TRANSPORT)
   // Serial Transport initialization
-  Serial.println("Serial Starting...");
-
   set_microros_serial_transports(Serial);
-
-  Serial.println("Serial Completed...");
 
 #else
 #error " No Transport defined! Please define USE_WIFI_TRANSPORT or USE_SERIAL_TRANSPORT"
 #endif
-  flashLED(3);
+
   setup_hardware();
   state = WAITING_AGENT;
   motorStop(1);
@@ -51,7 +40,7 @@ void loop()
   switch (state) {
     case WAITING_AGENT:
       EXECUTE_EVERY_N_MS(500,
-                         state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_AVAILABLE :
+                         state = (RMW_RET_OK == rmw_uros_ping_agent(200, 1)) ? AGENT_AVAILABLE :
                                                                                WAITING_AGENT;);
       break;
 
