@@ -1,0 +1,7 @@
+# Fan Selection 
+
+string mode # Quiet or Cool
+int64 speed 
+---
+string set_fan_mode 
+int64 set_fan_speed

@@ -1,26 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from amr_interfaces.srv import Fan
-from amr_interfaces.srv import JetsonClocks
-from amr_interfaces.srv import NVPModel
-from amr_safety.jtop_utils import board_status
-from amr_safety.jtop_utils import cpu_status
-from amr_safety.jtop_utils import disk_status
-from amr_safety.jtop_utils import emc_status
-from amr_safety.jtop_utils import fan_status
-from amr_safety.jtop_utils import gpu_status
-from amr_safety.jtop_utils import other_status
-from amr_safety.jtop_utils import power_status
-from amr_safety.jtop_utils import ram_status
-from amr_safety.jtop_utils import swap_status
-from amr_safety.jtop_utils import temp_status
 from diagnostic_msgs.msg import DiagnosticArray
 from diagnostic_msgs.msg import DiagnosticStatus
 # from diagnostic_msgs.msg import KeyValue
 import jtop
 import rclpy
 from rclpy.node import Node
+from vector_watchdogs.jtop_utils import board_status
+from vector_watchdogs.jtop_utils import collect_disk_status
+from vector_watchdogs.jtop_utils import cpu_status
+from vector_watchdogs.jtop_utils import emc_status
+from vector_watchdogs.jtop_utils import fan_status
+from vector_watchdogs.jtop_utils import gpu_status
+from vector_watchdogs.jtop_utils import other_status
+from vector_watchdogs.jtop_utils import power_status
+from vector_watchdogs.jtop_utils import ram_status
+from vector_watchdogs.jtop_utils import swap_status
+from vector_watchdogs.jtop_utils import temp_status
+
+from vector_interfaces.srv import Fan
+from vector_interfaces.srv import JetsonClocks
+from vector_interfaces.srv import NVPModel
 
 
 class DiagnosticsJtop(Node):
@@ -242,8 +243,8 @@ class DiagnosticsJtop(Node):
         self.arr.status += [self.board_status]
 
         # Add disk status
-        self.arr.status += [disk_status(self.hardware,
-                                        self.jetson.disk, 'board')]
+        self.arr.status += [collect_disk_status(self.hardware,
+                                                self.jetson.disk, 'board')]
 
         # Update status jtop
         self.publisher.publish(self.arr)
