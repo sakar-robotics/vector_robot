@@ -13,13 +13,13 @@ void Relay::begin()
 
 void Relay::turnOn()
 {
-  digitalWrite(relayPin, HIGH);
+  digitalWrite(relayPin, LOW);
   state = true;
 }
 
 void Relay::turnOff()
 {
-  digitalWrite(relayPin, LOW);
+  digitalWrite(relayPin, HIGH);
   state = false;
 }
 

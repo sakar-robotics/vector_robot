@@ -81,6 +81,8 @@ inline void rclErrorLoop()
 {
   while (true) {
     flashLED(2);
+    delay(1000);
+    ESP.restart();
   }
 }
 /**
@@ -112,9 +114,9 @@ rcl_subscription_t led_states_subscription;
 rcl_timer_t push_button_states_timer;
 
 // Relay - LEDs
-Relay redLed(Config::relayPin1);
-Relay greenLed(Config::relayPin2);
-Relay orangeLed(Config::relayPin3);
+Relay redLed(Config::relayPin3);
+Relay greenLed(Config::relayPin4);
+Relay orangeLed(Config::relayPin2);
 
 // Push buttons
 button button1(Config::buttonPin1);
@@ -255,6 +257,9 @@ void setup()
 #error " No Transport defined! Please define USE_WIFI_TRANSPORT or USE_SERIAL_TRANSPORT"
 #endif
   hardware_init();
+  redLed.turnOff();
+  greenLed.turnOff();
+  orangeLed.turnOff();
   state = WAITING_AGENT;
   flashLED(5);
 }

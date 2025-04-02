@@ -64,4 +64,9 @@ install(PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+install(PROGRAMS
+  ${PROJECT_NAME}/cmd_vel_filter.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()
