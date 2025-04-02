@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import time
 
 from geometry_msgs.msg import Twist
 import rclpy
