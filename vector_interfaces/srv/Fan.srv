@@ -1,7 +1,10 @@
-# Fan Selection 
-
-string mode # Quiet or Cool
-int64 speed 
+# This service set fan profile and speed.
+# Check all profiles available on NVIDIA Jetson documentation or running jtop
+# Request
+string profile
+int64 speed
 ---
-string set_fan_mode 
-int64 set_fan_speed
+# Response
+# Indicate successful profile selected and new speed
+string new_profile
+int64 new_speed 
