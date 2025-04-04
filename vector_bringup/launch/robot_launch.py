@@ -39,8 +39,14 @@ ARGUMENTS = [
         default_value='True',
         choices=['True', 'False'],
         description='Launch uros agents if true'
-    )
-
+    ),
+    DeclareLaunchArgument(
+        'joy_launch',
+        default_value='False',
+        choices=['True', 'False'],
+        description='Launch joystick launch file if true.'
+        'Keep it false if joystick launch file is getting launched from systemd service'
+    ),
 ]
 
 
@@ -52,6 +58,7 @@ def generate_launch_description():
     world_name = LaunchConfiguration('world_name')
     base_node_language = LaunchConfiguration('node_language')
     uros_agent = LaunchConfiguration('uros_agent')
+    joy_launch = LaunchConfiguration('joy_launch')
 
     # Package directories
     description_pkg = get_package_share_directory('vector_description')
@@ -59,6 +66,7 @@ def generate_launch_description():
     gazebo_pkg = get_package_share_directory('vector_gazebo')
     base_pkg = get_package_share_directory('vector_base')
     hardware_pkg = get_package_share_directory('vector_hardware')
+    teleop_pkg = get_package_share_directory('vector_teleop')
 
     # File paths
     base_launch_file_path = PathJoinSubstitution(
@@ -71,6 +79,8 @@ def generate_launch_description():
         [hardware_pkg, 'launch', 'hardware_launch.py'])
     uros_launch_file_path = PathJoinSubstitution(
         [bringup_pkg, 'launch', 'uros_agents_launch.py'])
+    joystick_launch_file_path = PathJoinSubstitution(
+        [teleop_pkg, 'launch', 'joystick_launch.py'])
 
     rviz_config_file = PathJoinSubstitution(
         [bringup_pkg, 'config', 'robot.rviz'])
@@ -97,8 +107,8 @@ def generate_launch_description():
         launch_arguments=[('use_sim_time', use_sim_time),
                           ('rviz', 'False'),
                           ('wheel_odom_topic', 'odometry/filtered'),
-                          ('camera_enabled', 'True'),
-                          ('two_d_lidar_enabled', 'True'),
+                          ('camera_enabled', 'False'),
+                          ('two_d_lidar_enabled', 'False'),
                           ('ground_truth_odometry', 'False')],
     )
 
@@ -110,6 +120,11 @@ def generate_launch_description():
     uros_agent_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(uros_launch_file_path),
         condition=IfCondition(uros_agent)
+    )
+
+    joystick_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(joystick_launch_file_path),
+        condition=IfCondition(joy_launch)
     )
 
     # Node
@@ -129,6 +144,7 @@ def generate_launch_description():
     ld.add_action(description_launch)
     ld.add_action(hardware_launch)
     ld.add_action(uros_agent_launch)
+    ld.add_action(joystick_launch)
     # Node
     ld.add_action(rviz_node)
     return ld
