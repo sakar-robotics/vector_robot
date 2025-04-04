@@ -38,13 +38,14 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 
+from vector_interfaces.msg import Decision
 from vector_interfaces.msg import PushButtonStates
 
 # # Constants for button and axis indices on jetson
 BUTTON_TRIANGLE = 3
 BUTTON_CIRCLE = 2
-BUTTON_SQUARE = 0
-BUTTON_CROSS = 1
+BUTTON_SQUARE = 1
+BUTTON_CROSS = 0
 AXIS_LEFT_RIGHT = 6  # -1 for right, 1 for left: D-pad left and right
 AXIS_UP_DOWN = 7  # -1 for down, 1 for up: D-pad up and down
 R1_BUTTON = 5
@@ -70,6 +71,8 @@ class JoyControl(Node):
             Joy, 'joy', self.joy_callback, 10)
         self.push_button_subscription = self.create_subscription(
             PushButtonStates, 'push_button_states', self.push_button_callback, 10)
+        self.joy_decision_publisher = self.create_publisher(
+            Decision, 'joy_topic_decision', 10)
 
         # Client to set the teleop parameters
         self.client = self.create_client(
@@ -96,6 +99,7 @@ class JoyControl(Node):
 
         # Default values
         self.scale_value = 1.0
+        self.target_joy_topic = 'base'  # Default topic to be used
 
         self.get_logger().info('\033[93mJoy Control node started.\033[0m')
 
@@ -334,6 +338,16 @@ class JoyControl(Node):
                                multi_click_threshold=0.7
                                )
 
+        self.handle_button_all(button_cross,
+                               self.prev_buttons.get(BUTTON_CROSS, 0),
+                               'Cross_button',
+                               callbacks={
+                                   'double_click': self.publish_joy_decision,
+                               },
+                               long_press_threshold=2.0,
+                               multi_click_threshold=0.7
+                               )
+
         # Store the previous button states
         self.prev_buttons[BUTTON_TRIANGLE] = button_triangle
         self.prev_buttons[BUTTON_CIRCLE] = button_circle
@@ -383,7 +397,7 @@ class JoyControl(Node):
     def restart_pc_command(self):
         """Restart the PC."""
         self.get_logger().warning('Restarting the PC')
-        os.system('systemctl reboot')
+        os.system('sudo systemctl reboot')
 
     def launch_ros2_command(self):
         """Launch the ROS 2 command with safety checks."""
@@ -439,6 +453,18 @@ class JoyControl(Node):
         self.get_logger().info('D-pad button pressed, decreasing scale value.')
         self.scale_value *= 0.9    # Decrease scale value by 10%
         self.send_request()
+
+    def publish_joy_decision(self):
+        """Publish the joy decision."""
+        # Toggle between 'base' and 'arm'
+        self.target_joy_topic = 'arm' if self.target_joy_topic == 'base' else 'base'
+
+        # Create and publish the Decision message
+        decision_msg = Decision()
+        decision_msg.target = self.target_joy_topic
+        self.joy_decision_publisher.publish(decision_msg)
+
+        self.get_logger().info(f'Published Decision message with target: {self.target_joy_topic}')
 
     def destroy_node(self):
         """Override destroy_node to ensure subprocesses are terminated."""
