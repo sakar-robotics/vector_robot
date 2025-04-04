@@ -9,11 +9,14 @@
 - **Dynamic Parameter Adjustment**: Adjust teleoperation parameters like speed and scaling dynamically.
 - **Advanced Button Handling**: Support for single press, long press, and multi-click events.
 - **ROS 2 Integration**: Fully integrated with ROS 2 Humble.
+- **Twist Mux Integration**: Prioritize teleoperation commands using a twist multiplexer.
+- **Joy Splitter**: Split joystick inputs between different robot components (e.g., base and arm).
 
 ## Package Contents
 
 - **Nodes**:
   - `joy_control.py`: Handles joystick inputs and button events to control the robot and execute system commands.
+  - `joy_splitter.cpp`: Splits joystick inputs between different robot components based on user decisions.
 - **Launch Files**:
   - `joystick_launch.py`: Launches joystick teleoperation.
   - `teleop_key_launch.py`: Launches keyboard teleoperation.
@@ -109,7 +112,15 @@ Joystick buttons can be configured to execute system commands like shutting down
 
 ### Multi-Click and Long Press
 
-The node supports advanced button handling, including single press, long press, and multi-click events, which can be mapped to different functionalities.
+The node supports advanced button handling, including single press, long press, and multi-click events, which can be mapped to different functionalities. For example, double-pressing the **X button** on the joystick switches the joystick topic between `base` and `arm`.
+
+### Twist Mux Integration
+
+The twist multiplexer (`twist_mux`) is used to prioritize teleoperation commands. For example, joystick commands can override navigation commands when both are active.
+
+### Joy Splitter
+
+The `joy_splitter` node splits joystick inputs between different robot components (e.g., base and arm). The target component can be switched dynamically by publishing a decision message or by double-pressing the **X button** on the joystick.
 
 ## API
 

@@ -12,13 +12,13 @@ def generate_launch_description():
         'config',
         'watchdogs_params.yaml',
     )
-    
+
     config_diagnostic = os.path.join(
         get_package_share_directory('vector_watchdogs'),
         'config',
         'diagnostic.yaml',
     )
-    
+
     diagnostic_aggregator = Node(
         package='diagnostic_aggregator',
         executable='aggregator_node',

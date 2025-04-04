@@ -58,7 +58,7 @@ You can control your Jetson using the following services:
 Example:
 
 ```bash
-ros2 service call /jtop/fan vector_watchdogs_interfaces/srv/Fan "{'mode':'quiet', 'speed':100}"
+ros2 service call /jtop/fan vector_watchdogs_interfaces/srv/Fan "{'profile':'quiet', 'speed':100}"
 ```
 
 This sets the fan speed to 100% and the profile to `quiet`. Available profiles include `quiet`, `cool`, and `manual`.
@@ -116,15 +116,12 @@ ros2 launch vector_watchdogs watchdogs_launch.py
 | Parameter       | Type   | Default | Description                                      |
 |-----------------|--------|---------|--------------------------------------------------|
 | `interval`      | double | 0.5     | Communication speed interval for `jtop`.        |
-| `level_error`   | int    | 60      | Threshold for error-level diagnostics.          |
-| `level_warning` | int    | 40      | Threshold for warning-level diagnostics.        |
-| `level_ok`      | int    | 20      | Threshold for OK-level diagnostics.             |
 
 ### ROS Topics Published
 
 | Topic                 | Interface                          | Description                  |
 |-----------------------|-------------------------------------|------------------------------|
-| `/diagnostics/jetson` | `diagnostic_msgs/DiagnosticArray`  | Publishes diagnostic messages. |
+| `/diagnostics`        | `diagnostic_msgs/DiagnosticArray`  | Publishes diagnostic messages. |
 
 ### ROS Services Advertised
 
@@ -133,3 +130,17 @@ ros2 launch vector_watchdogs watchdogs_launch.py
 | `/jtop/fan`           | `vector_watchdogs_interfaces/Fan`  | Change the fan speed configuration.   |
 | `/jtop/nvpmodel`      | `vector_watchdogs_interfaces/NVPModel` | Change the NVPmodel of your board. |
 | `/jtop/jetson_clocks` | `vector_watchdogs_interfaces/JetsonClocks` | Enable or disable Jetson Clocks. |
+
+### Additional Diagnostics
+
+The package provides detailed diagnostics for various Jetson components, including:
+
+- **CPU**: Utilization, frequency, and governor.
+- **GPU**: Load, frequency, and scaling status.
+- **Memory**: RAM and SWAP usage.
+- **Temperature**: Sensor readings with warning and critical thresholds.
+- **Power**: Voltage, current, and power consumption.
+- **Fan**: Speed and profile.
+- **Disk**: Usage and capacity.
+
+These diagnostics are published under the `/diagnostics` topic and can be visualized using tools like `rqt` or `diagnostic_aggregator`.
