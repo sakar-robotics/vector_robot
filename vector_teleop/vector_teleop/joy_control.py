@@ -44,8 +44,8 @@ from vector_interfaces.msg import PushButtonStates
 # # Constants for button and axis indices on jetson
 BUTTON_TRIANGLE = 3
 BUTTON_CIRCLE = 2
-BUTTON_SQUARE = 1
-BUTTON_CROSS = 0
+BUTTON_SQUARE = 0
+BUTTON_CROSS = 1
 AXIS_LEFT_RIGHT = 6  # -1 for right, 1 for left: D-pad left and right
 AXIS_UP_DOWN = 7  # -1 for down, 1 for up: D-pad up and down
 R1_BUTTON = 5
@@ -416,7 +416,7 @@ class JoyControl(Node):
         try:
             self.process = subprocess.Popen(
                 ['ros2', 'launch', 'vector_bringup',
-                    'robot.launch.py', 'use_sim_time:=False'],
+                    'robot_launch.py', 'use_sim_time:=False'],
                 preexec_fn=os.setsid  # Set the process group ID
             )
             self.get_logger().info('ROS 2 command launched successfully.')

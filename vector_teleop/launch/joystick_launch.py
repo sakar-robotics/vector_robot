@@ -47,9 +47,16 @@ def generate_launch_description():
         ],
     )
 
+    joy_splitter_node = Node(
+        package='vector_teleop',
+        executable='joy_splitter',
+        name='joy_splitter',
+        )
+
     ld = LaunchDescription()
     ld.add_action(teleop_node)
     ld.add_action(joy_node)
     ld.add_action(joy_control)
     ld.add_action(twist_mux)
+    ld.add_action(joy_splitter_node)
     return ld

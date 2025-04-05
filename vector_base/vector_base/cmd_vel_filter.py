@@ -21,13 +21,17 @@ class CmdVelFilter(Node):
         self.publisher = self.create_publisher(Twist, '/cmd_vel/filtered', 10)
 
         # Declare ROS2 parameters for acceleration and deceleration tuning
-        self.declare_parameter('acceleration_limit', 0.5)
-        self.declare_parameter('deceleration_limit', 0.5)
+        self.declare_parameter('acceleration_limit_linear', 0.5)
+        self.declare_parameter('deceleration_limit_linear', 0.5)
+        self.declare_parameter('acceleration_limit_angular', 3.0)
+        self.declare_parameter('deceleration_limit_angular', 3.0)
         self.declare_parameter('publish_rate', 20.0)
         self.declare_parameter('cmd_vel_timeout', 0.1)
 
-        self.acceleration_limit = self.get_parameter('acceleration_limit').value
-        self.deceleration_limit = self.get_parameter('deceleration_limit').value
+        self.acceleration_limit_linear = self.get_parameter('acceleration_limit_linear').value
+        self.deceleration_limit_linear = self.get_parameter('deceleration_limit_linear').value
+        self.acceleration_limit_angular = self.get_parameter('acceleration_limit_angular').value
+        self.deceleration_limit_angular = self.get_parameter('deceleration_limit_angular').value
         self.publish_rate = self.get_parameter('publish_rate').value
         self.cmd_vel_timeout = self.get_parameter('cmd_vel_timeout').value
 
@@ -56,12 +60,12 @@ class CmdVelFilter(Node):
             self.current_velocity.linear.x = self.apply_smoothing(
                 self.current_velocity.linear.x,
                 self.last_cmd_vel.linear.x,
-                self.acceleration_limit,
-                self.deceleration_limit
+                self.acceleration_limit_linear,
+                self.deceleration_limit_linear
             )
             self.current_velocity.angular.z = self.apply_smoothing(
                 self.current_velocity.angular.z, self.last_cmd_vel.angular.z,
-                self.acceleration_limit, self.deceleration_limit
+                self.acceleration_limit_angular, self.deceleration_limit_angular
             )
             self.publish_cmd_vel(self.current_velocity.linear.x, self.current_velocity.angular.z)
         else:
