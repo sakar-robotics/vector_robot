@@ -309,35 +309,7 @@ class JoyControl(Node):
         button_left_right = msg.axes[AXIS_LEFT_RIGHT]
         button_up_down = msg.axes[AXIS_UP_DOWN]
 
-        self.handle_axis(button_left_right,
-                         self.prev_buttons[AXIS_LEFT_RIGHT],
-                         'Left_right_axis',
-                         self.ramp_down_scale_value,
-                         self.ramp_up_scale_value
-                         )
-
-        self.handle_button_all(button_triangle,
-                               self.prev_buttons.get(BUTTON_TRIANGLE, 0),
-                               'Triangle_button',
-                               callbacks={
-                                   'single_press': self.launch_ros2_command,
-                                   'long_press': self.shutdown_pc_command,
-                               },
-                               long_press_threshold=2.0,
-                               multi_click_threshold=0.7
-                               )
-
-        self.handle_button_all(button_circle,
-                               self.prev_buttons.get(BUTTON_CIRCLE, 0),
-                               'Circle_button',
-                               callbacks={
-                                   'single_press': self.stop_ros2_command,
-                                   'long_press': self.restart_pc_command,
-                               },
-                               long_press_threshold=2.0,
-                               multi_click_threshold=0.7
-                               )
-
+        # 1. Process the Cross Button first
         self.handle_button_all(button_cross,
                                self.prev_buttons.get(BUTTON_CROSS, 0),
                                'Cross_button',
@@ -347,6 +319,38 @@ class JoyControl(Node):
                                long_press_threshold=2.0,
                                multi_click_threshold=0.7
                                )
+
+        # 2. If joy topic decision is 'base', handle the square button
+        if self.target_joy_topic == 'base':
+
+            self.handle_axis(button_left_right,
+                             self.prev_buttons[AXIS_LEFT_RIGHT],
+                             'Left_right_axis',
+                             self.ramp_down_scale_value,
+                             self.ramp_up_scale_value
+                             )
+
+            self.handle_button_all(button_triangle,
+                                   self.prev_buttons.get(BUTTON_TRIANGLE, 0),
+                                   'Triangle_button',
+                                   callbacks={
+                                       'single_press': self.launch_ros2_command,
+                                       'long_press': self.shutdown_pc_command,
+                                   },
+                                   long_press_threshold=2.0,
+                                   multi_click_threshold=0.7
+                                   )
+
+            self.handle_button_all(button_circle,
+                                   self.prev_buttons.get(BUTTON_CIRCLE, 0),
+                                   'Circle_button',
+                                   callbacks={
+                                       'single_press': self.stop_ros2_command,
+                                       'long_press': self.restart_pc_command,
+                                   },
+                                   long_press_threshold=2.0,
+                                   multi_click_threshold=0.7
+                                   )
 
         # Store the previous button states
         self.prev_buttons[BUTTON_TRIANGLE] = button_triangle

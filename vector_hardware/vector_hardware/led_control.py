@@ -3,6 +3,7 @@ from geometry_msgs.msg import Twist
 import rclpy
 from rclpy.node import Node
 
+from vector_interfaces.msg import Decision
 from vector_interfaces.msg import LedStates
 
 
@@ -26,6 +27,8 @@ class LedControl(Node):
 
         self.cmd_vel_sub = self.create_subscription(
             Twist, self.cmd_vel_topic, self.cmd_vel_callback, 10)
+        self.self.joy_decision_sub = self.create_subscription(
+            Decision, 'joy_topic_decision', self.joy_decision_callback, 10)
 
         # LED States
         self.red_led = True     # Always True
@@ -37,6 +40,7 @@ class LedControl(Node):
         # Parameters for error check
         self.max_safe_speed = 1.0
         self.error_active = False
+        self.target_joy_topic = 'base'
 
         # Timer for LED state publishing
         self.led_pub_frequency = 1.0
@@ -54,13 +58,19 @@ class LedControl(Node):
             self.green_led = False
 
         # Check for a stimulated error condition: if linear speed exceeds threshold.
-        if abs(self.cmd_vel.linear.x) > self.max_safe_speed:
-            self.error_active = True
-        else:
-            self.error_active = False
+        # if abs(self.cmd_vel.linear.x) > self.max_safe_speed:
+        #     self.error_active = True
+        # else:
+        #     self.error_active = False
 
-        # If error is active, turn the orange LED on, else keep it off
-        if self.error_active:
+        # # If error is active, turn the orange LED on, else keep it off
+        # if self.error_active:
+        #     self.orange_led = True
+        # else:
+        #     self.orange_led = False
+
+        # Set Orange LED based on the target joy topic
+        if self.target_joy_topic == 'base':
             self.orange_led = True
         else:
             self.orange_led = False
@@ -79,6 +89,10 @@ class LedControl(Node):
         msg.orange_led = orange_led
         msg.green_led = green_led
         self.led_states_pub.publish(msg)
+
+    def joy_decision_callback(self, msg: Decision):
+        """Handle callback for the joy decision topic."""
+        self.target_joy_topic = msg.target
 
 
 def main(args=None):
