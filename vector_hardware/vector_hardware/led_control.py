@@ -27,7 +27,7 @@ class LedControl(Node):
 
         self.cmd_vel_sub = self.create_subscription(
             Twist, self.cmd_vel_topic, self.cmd_vel_callback, 10)
-        self.self.joy_decision_sub = self.create_subscription(
+        self.joy_decision_sub = self.create_subscription(
             Decision, 'joy_topic_decision', self.joy_decision_callback, 10)
 
         # LED States
