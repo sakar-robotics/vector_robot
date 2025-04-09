@@ -47,6 +47,12 @@ ARGUMENTS = [
         description='Launch joystick launch file if true.'
         'Keep it false if joystick launch file is getting launched from systemd service'
     ),
+    DeclareLaunchArgument(
+        'description_launch',
+        default_value='False',
+        choices=['True', 'False'],
+        description='Launch robot description if true'
+    ),
 ]
 
 
@@ -59,6 +65,7 @@ def generate_launch_description():
     base_node_language = LaunchConfiguration('node_language')
     uros_agent = LaunchConfiguration('uros_agent')
     joy_launch = LaunchConfiguration('joy_launch')
+    description_launch = LaunchConfiguration('description_launch')
 
     # Package directories
     description_pkg = get_package_share_directory('vector_description')
@@ -110,6 +117,7 @@ def generate_launch_description():
                           ('camera_enabled', 'False'),
                           ('two_d_lidar_enabled', 'False'),
                           ('ground_truth_odometry', 'False')],
+        condition=IfCondition(description_launch)
     )
 
     hardware_launch = IncludeLaunchDescription(

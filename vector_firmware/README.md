@@ -1,6 +1,6 @@
 # Vector Firmware Package
 
-This firmware integrates micro-ROS with ESP32 hardware to control motors using PID, process encoder signals, and manage motor driving via MCPWM. **This code is written for the ESP32 Doit DevKit V1 and is built with PlatformIO.**
+This firmware integrates micro-ROS with ESP32 hardware to control motors using PID, process encoder signals via PCNT, and manage motor driving via MCPWM. **This code is written for the ESP32 Doit DevKit V1 and is built with PlatformIO.**
 
 ## Module Descriptions
 
@@ -68,14 +68,14 @@ Ensure PlatformIO is installed. To build and upload the firmware, press **Ctrl+A
 
 | Function       | Motor/Encoder | ESP32 Pin | Description          |
 |----------------|---------------|-----------|----------------------|
-| Motor 1 Dir    | Motor 1       | 16        | RX2                  |
-| Motor 1 PWM    | Motor 1       | 4         | D4                   |
-| Motor 2 Dir    | Motor 2       | 18        | D18                  |
-| Motor 2 PWM    | Motor 2       | 17        | TX2                  |
-| Motor 3 Dir    | Motor 3       | 21        | D21                  |
-| Motor 3 PWM    | Motor 3       | 19        | D19                  |
-| Motor 4 Dir    | Motor 4       | 23        | D23                  |
-| Motor 4 PWM    | Motor 4       | 22        | D22                  |
+| Motor 1 Dir    | Motor 1       | 22        | D22                  |
+| Motor 1 PWM    | Motor 1       | 23        | D23                   |
+| Motor 2 Dir    | Motor 2       | 17        | TX2                  |
+| Motor 2 PWM    | Motor 2       | 18        | D18                  |
+| Motor 3 Dir    | Motor 3       | 19        | D19                  |
+| Motor 3 PWM    | Motor 3       | 21        | D21                  |
+| Motor 4 Dir    | Motor 4       | 4         | D4                  |
+| Motor 4 PWM    | Motor 4       | 16        | RX2                  |
 | Encoder 1 A    | Encoder 1     | 14        | D14                  |
 | Encoder 1 B    | Encoder 1     | 27        | D27                  |
 | Encoder 2 A    | Encoder 2     | 26        | D26                  |

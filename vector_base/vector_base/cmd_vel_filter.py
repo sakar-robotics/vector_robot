@@ -58,10 +58,8 @@ class CmdVelFilter(Node):
 
         if self.cmd_received and time_diff < self.cmd_vel_timeout:
             self.current_velocity.linear.x = self.apply_smoothing(
-                self.current_velocity.linear.x,
-                self.last_cmd_vel.linear.x,
-                self.acceleration_limit_linear,
-                self.deceleration_limit_linear
+                self.current_velocity.linear.x, self.last_cmd_vel.linear.x,
+                self.acceleration_limit_linear, self.deceleration_limit_linear
             )
             self.current_velocity.angular.z = self.apply_smoothing(
                 self.current_velocity.angular.z, self.last_cmd_vel.angular.z,

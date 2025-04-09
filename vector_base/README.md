@@ -53,8 +53,10 @@ The `cmd_vel_filter` node smooths the incoming velocity commands (`/cmd_vel`) to
 
 The `cmd_vel_filter` node uses the following parameters, which can also be configured in the `base_params.yaml` file:
 
-- `acceleration_limit`: Maximum rate of increase in velocity (m/s²).
-- `deceleration_limit`: Maximum rate of decrease in velocity (m/s²).
+- `acceleration_limit_linear`: Maximum rate of increase in linear velocity (m/s²).
+- `deceleration_limit_linear`: Maximum rate of decrease in linear velocity (m/s²).
+- `acceleration_limit_angular`: Maximum rate of increase in angular velocity (rad/s²).
+- `deceleration_limit_angular`: Maximum rate of decrease in angular velocity (rad/s²).
 - `publish_rate`: Frequency for publishing filtered velocity commands (Hz).
 - `cmd_vel_timeout`: Timeout duration for receiving new velocity commands (seconds).
 

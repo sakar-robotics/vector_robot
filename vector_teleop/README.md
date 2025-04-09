@@ -71,15 +71,21 @@ teleop_node:
       x: 0.5
     scale_linear_turbo:
       x: 2.0
-    axis_angular:
-      yaw: 3
+
+    axis_angular: # Right thumb stick horizontal
+      yaw: 2       # updated from 3 to 2 to match config file
     scale_angular:
       yaw: 3.0
     scale_angular_turbo:
       yaw: 8.0
+
     require_enable_button: true
     enable_button: 4
     enable_turbo_button: 5
+
+joy_control:
+  ros__parameters:
+    debug: false
 ```
 
 ### Twist Mux Configuration
@@ -91,9 +97,10 @@ The `twist_mux.yaml` file defines the priority of teleoperation commands:
   ros__parameters:
     topics:
       navigation:
-        topic: cmd_vel
+        topic: cmd_vel/key   # updated from cmd_vel to cmd_vel/key to match config file
         timeout: 0.5
         priority: 50
+
       joystick:
         topic: cmd_vel/joy
         timeout: 0.5
@@ -121,6 +128,43 @@ The twist multiplexer (`twist_mux`) is used to prioritize teleoperation commands
 ### Joy Splitter
 
 The `joy_splitter` node splits joystick inputs between different robot components (e.g., base and arm). The target component can be switched dynamically by publishing a decision message or by double-pressing the **X button** on the joystick.
+
+## Communication Flow
+
+The following diagram illustrates the communication flow between nodes and topics in the teleoperation package:
+
+![rqt_graph](../docs/vector_teleop_rqt.svg)
+
+### Explanation of Communication
+
+1. **`/joy_node`**:
+   - Publishes joystick data to the `/joy` topic.
+   - Also publishes button states to `/push_button_states`.
+
+2. **`/joy_control`**:
+   - Subscribes to `/push_button_states` and processes button inputs.
+   - Publishes decisions to `/joy_topic_decision`.
+
+3. **`/joy_topic_decision`**:
+   - Subscribes to `/joy` and `/joy_control` outputs.
+   - Publishes to `/joy_splitter`.
+
+4. **`/joy_splitter`**:
+   - Splits joystick data into separate topics:
+     - `/joy/arm` for arm control.
+     - `/joy/base` for base control.
+     - `/joy/set_feedback` for feedback.
+
+5. **`/teleop_node`**:
+   - Subscribes to `/joy/base` and generates velocity commands for the robot.
+   - Publishes to `/cmd_vel/joy`.
+
+6. **`/twist_mux`**:
+   - Merges velocity commands from multiple sources (`/cmd_vel/key` and `/cmd_vel/joy`).
+   - Publishes the final velocity command to `/cmd_vel`.
+
+7. **Diagnostics**:
+   - `/twist_mux` also publishes diagnostic information to `/diagnostics`.
 
 ## API
 
