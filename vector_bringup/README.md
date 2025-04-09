@@ -15,17 +15,20 @@ This package is responsible for bringing up the vector robot including hardware,
 ## Example Launch Commands
 
 - Launch the robot with real hardware:
-  ```
+
+  ```bash
   ros2 launch vector_bringup robot_launch.py use_sim_time:=False uros_agent:=True
   ```
 
 - Launch the robot in simulation (Gazebo) with RViz:
-  ```
+
+  ```bash
   ros2 launch vector_bringup robot_launch.py use_sim_time:=True viz:=True
   ```
 
 - Launch only the micro-ROS agents:
-  ```
+
+  ```bash
   ros2 launch vector_bringup uros_agents_launch.py
   ```
 
