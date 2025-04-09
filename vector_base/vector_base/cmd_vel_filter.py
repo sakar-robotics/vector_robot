@@ -1,5 +1,33 @@
 #!/usr/bin/env python3
 
+"""
+This script implements a ROS2 node named `CmdVelFilter` that filters and smooths velocity commands
+received on the `/cmd_vel` topic. The purpose of this node is to introduce acceleration and
+deceleration limits to ensure smooth motion for a robot. It publishes the filtered velocity
+commands to the `/cmd_vel/filtered` topic.
+
+Key Features:
+- Applies configurable acceleration and deceleration limits to both linear and angular velocities.
+- Ensures smooth transitions between velocity commands to prevent abrupt movements.
+- Stops publishing velocity commands if no new commands are received within a configurable
+  timeout period.
+- Provides ROS2 parameters for tuning acceleration, deceleration, publish rate, and timeout.
+
+Parameters:
+- `acceleration_limit_linear` (float): Maximum linear acceleration (0.5 m/s²).
+- `deceleration_limit_linear` (float): Maximum linear deceleration (0.5 m/s²).
+- `acceleration_limit_angular` (float): Maximum angular acceleration (3.0 rad/s²).
+- `deceleration_limit_angular` (float): Maximum angular deceleration (3.0 rad/s²).
+- `publish_rate` (float): Frequency at which filtered velocity commands are published (20.0 Hz).
+- `cmd_vel_timeout` (float): Timeout duration for receiving new velocity commands (0.1 seconds).
+
+Usage:
+- This node subscribes to the `/cmd_vel` topic to receive raw velocity commands.
+- It processes the commands to apply smoothing and publishes the filtered commands
+  to the `/cmd_vel/filtered` topic.
+- The node can be launched as part of a ROS2 system.
+
+"""
 
 from geometry_msgs.msg import Twist
 import rclpy

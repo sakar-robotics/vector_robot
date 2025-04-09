@@ -5,12 +5,16 @@ ROS node for controlling various functionalities using a joystick and push butto
 
 Overview:
 - The JoyControl class subscribes to joystick and push button states to
-  launch ROS2 commands, adjust scale values, and perform system operations
-  (shutdown/restart). It sends service requests to update teleop parameters dynamically.
+  launch ROS2 commands, adjust scale values, toggle between control modes, and perform
+  system operations (shutdown/restart). It sends service requests to update teleop
+  parameters dynamically.
 
 Subscribers:
 - joy (Joy): Receives joystick input messages.
 - push_button_states (PushButtonStates): Receives push button states.
+
+Publishers:
+- joy_topic_decision (Decision): Publishes the target control mode (e.g., 'base' or 'arm').
 
 Services:
 - /teleop_node/set_parameters (SetParameters): Updates teleop parameters.
@@ -22,8 +26,10 @@ Methods:
 - handle_axis: Processes D-pad axis changes.
 - joy_callback: Handles joystick inputs.
 - push_button_callback: Handles push button inputs.
-- launch_ros2_command, stop_ros2_command, shutdown_pc_command, restart_pc_command:
-  Execute ROS2 commands or system operations.
+- launch_ros2_command, stop_ros2_command: Start or stop a ROS2 launch process.
+- shutdown_pc_command, restart_pc_command: Execute system shutdown or restart commands.
+- ramp_up_scale_value, ramp_down_scale_value: Adjust scale values dynamically.
+- publish_joy_decision: Toggle and publish the target control mode.
 """
 import os
 import signal

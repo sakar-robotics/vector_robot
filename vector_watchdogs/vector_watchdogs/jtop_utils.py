@@ -1,6 +1,47 @@
 #!/usr/bin/env python3
-from diagnostic_msgs.msg import DiagnosticStatus, KeyValue
 
+"""
+This module provides utility functions for monitoring and diagnosing the status of Jetson devices.
+It includes functions to generate diagnostic messages for various hardware components such as CPU, GPU, RAM, 
+disk, power, temperature sensors, and more. These diagnostic messages are formatted as ROS DiagnosticStatus 
+messages, which can be used for system monitoring and debugging.
+
+Key Features:
+- Conversion utilities for size and unit representation.
+- Functions to generate diagnostic messages for Jetson hardware components.
+- Support for CPU, GPU, RAM, disk, power, temperature, and other hardware diagnostics.
+- Integration with ROS diagnostic messages for seamless system monitoring.
+
+Constants:
+- TEMPERATURE_MAX: Maximum temperature threshold for warning.
+- TEMPERATURE_CRIT: Critical temperature threshold for error.
+
+Functions:
+- size_min, unit_min, find_unit: Utilities for size and unit conversions.
+- size_to_string, unit_to_string, value_to_string: Formatting utilities for size and unit strings.
+- strfdelta: Formats timedelta objects into human-readable strings.
+- other_status: Generates diagnostic status for Jetson power and uptime.
+- board_status: Generates diagnostic status for the board configuration.
+- disk_status: Generates diagnostic status for disk usage.
+- cpu_status: Generates diagnostic status for CPU utilization.
+- gpu_status: Generates diagnostic status for GPU utilization.
+- fan_status: Generates diagnostic status for fan speeds.
+- ram_status: Generates diagnostic status for RAM usage.
+- swap_status: Generates diagnostic status for swap memory usage.
+- power_status: Generates diagnostic status for power consumption.
+- temp_status: Generates diagnostic status for temperature sensors.
+- emc_status: Generates diagnostic status for EMC (External Memory Controller).
+- engine_status: Generates diagnostic status for hardware engines.
+
+Usage:
+This module is designed to be used in ROS-based systems for monitoring Jetson devices. 
+It provides detailed diagnostic information that can be used for system health checks and debugging.
+
+Author: [Your Name]
+Date: [Date]
+"""
+from diagnostic_msgs.msg import DiagnosticStatus
+from diagnostic_msgs.msg import KeyValue
 
 TEMPERATURE_MAX = 84
 TEMPERATURE_CRIT = 100
