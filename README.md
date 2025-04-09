@@ -57,8 +57,8 @@ For detailed package-specific documentation, please refer to the README files wi
 
 5. **Additional Tools and Scripts**  
 
-   - Check the [docs](../docs/) directory for non-package-specific guides.
-   - Helpful shell scripts are available in the [scripts](../scripts/) directory (e.g., for setup, installation, and automation).
+   - Check the [docs](/docs/) directory for non-package-specific guides.
+   - Helpful shell scripts are available in the [scripts](/scripts/) directory (e.g., for setup, installation, and automation).
 
 ## Recommended Workflow
 
@@ -68,10 +68,9 @@ For detailed package-specific documentation, please refer to the README files wi
 
 ## Additional Documentation
 
-The following documents are available in the [docs](../docs/) directory for overall system setup and troubleshooting:
+The following documents are available in the [docs](/docs/) directory for overall system setup and troubleshooting:
 
-- [Robot SSH Guide](../docs/robot_ssh.md)
-- [Automatic Startup for ROS2 on Jetson Orin Nano](../docs/setup_robot_auto_start.md)
-- [Ethernet Configuration for IGUS Robotic Arm](../docs/ethernet_setup.md)
-
-Happy coding and robot controlling!
+- [Robot SSH Guide](/docs/robot_ssh.md)
+- [Automatic Startup for ROS2 on Jetson Orin Nano](/docs/setup_robot_auto_start.md)
+- [Ethernet Configuration for IGUS Robotic Arm](/docs/ethernet_setup.md)
+- [Robot Deployment Guide](/docs/code_modification_developer_guide.md)
