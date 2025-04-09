@@ -3,6 +3,7 @@ joy_node:
     device_id: 0
     deadzone: 0.05
     autorepeat_rate: 20.0
+
 teleop_node:
   ros__parameters:
     axis_linear: # Left thumb stick vertical
@@ -13,7 +14,7 @@ teleop_node:
       x: 2.0
 
     axis_angular: # Right thumb stick horizontal
-      yaw: 3
+      yaw: 2
     scale_angular:
       yaw: 3.0
     scale_angular_turbo:
@@ -23,29 +24,6 @@ teleop_node:
     enable_button: 4 # L1 button
     enable_turbo_button: 5 # R1 button
 
-# joy_node:
-#   ros__parameters:
-#     device_id: 0
-#     deadzone: 0.05
-#     autorepeat_rate: 20.0
-# teleop_node:
-#   ros__parameters:
-
-#     axis_linear:  # Left thumb stick vertical
-#       x: 1
-#     scale_linear:
-#       x: 0.2
-#     scale_linear_turbo:
-#       x: 1.0
-
-#     axis_angular:  # Right thumb stick horizontal
-#       yaw: 2
-#     scale_angular:
-#       yaw: 0.5
-#     scale_angular_turbo:
-#       yaw: 1.0
-
-#     require_enable_button: true
-#     enable_button: 4  # L1 button
-#     enable_turbo_button: 5  # R1 button
-
+joy_control:
+  ros__parameters:
+    debug: false

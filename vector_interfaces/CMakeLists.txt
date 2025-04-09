@@ -8,6 +8,10 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   msg/MotorTicksSec.msg
   msg/LedStates.msg
   msg/PushButtonStates.msg
+  msg/Decision.msg
+  srv/Fan.srv
+  srv/JetsonClocks.srv
+  srv/NVPModel.srv
   DEPENDENCIES
 )
 

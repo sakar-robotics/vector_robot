@@ -1,0 +1,22 @@
+[Unit]
+Description=Robot Startup Script
+After=network-online.target graphical.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=vector
+Group=vector
+ExecStart=/home/vector/robot_startup.sh
+WorkingDirectory=/home/vector
+Environment="HOME=/home/vector"
+Restart=always
+RestartSec=5
+TimeoutStartSec=30
+TimeoutStopSec=30
+StandardOutput=append:/home/vector/robot_service.log
+StandardError=append:/home/vector/robot_service.log
+ExecStartPre=/bin/bash -c "pgrep -f robot_startup.sh && exit 1 || exit 0"
+
+[Install]
+WantedBy=multi-user.target

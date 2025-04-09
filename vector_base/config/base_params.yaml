@@ -10,3 +10,12 @@ diff_drive_control_node:
     base_frame_id: "base_link"
     odom_topic: "odom"
     publish_tf: true
+
+cmd_vel_filter_node:
+  ros__parameters:
+    acceleration_limit_linear: 0.5
+    deceleration_limit_linear: 0.5
+    acceleration_limit_angular: 3.0
+    deceleration_limit_angular: 3.0
+    publish_rate: 20.0
+    cmd_vel_timeout: 0.1

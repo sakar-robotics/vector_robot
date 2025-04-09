@@ -43,11 +43,19 @@ def generate_launch_description():
         )
     )
 
+    cmd_vel_filter = Node(
+        package='vector_base',
+        executable='cmd_vel_filter.py',
+        name='cmd_vel_filter_node',
+        parameters=[base_params_file]
+    )
+
     ld = LaunchDescription()
     # Arguments
     ld.add_action(node_language_arg)
     # Nodes
     ld.add_action(base_py_launch)
     ld.add_action(base_cpp_launch)
+    ld.add_action(cmd_vel_filter)
 
     return ld

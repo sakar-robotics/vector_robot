@@ -249,6 +249,7 @@ bool param_callback(const Parameter * old_param, const Parameter * new_param, vo
 
 bool create_entities()
 {
+  flashLED(4);
   allocator = rcl_get_default_allocator();
 
   // Create and modify init_options
@@ -353,6 +354,7 @@ bool create_entities()
 
 bool destroyEntities()
 {
+  flashLED(5);
   rmw_context_t * rmw_context = rcl_context_get_rmw_context(&support.context);
   (void)rmw_uros_set_context_entity_destroy_session_timeout(rmw_context, 0);
 

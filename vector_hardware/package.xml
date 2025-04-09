@@ -3,7 +3,8 @@
 <package format="3">
   <name>vector_hardware</name>
   <version>0.0.0</version>
-  <description>This package will be used to control devices or get data from the sensors on the robot</description>
+  <description>This package will be used to control devices or get data from the sensors on the
+    robot</description>
   <maintainer email="gupta.adyansh@gmail.com">Adyansh Gupta</maintainer>
   <license>TODO: License declaration</license>
 
@@ -11,6 +12,10 @@
 
   <depend>rclpy</depend>
   <depend>std_msgs</depend>
+  <depend>common_interfaces</depend>
+  <depend>python3-adafruit-blinka-pip</depend>
+  <depend>python3-adafruit-circuitpython-bno08x-pip</depend>
+
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
@@ -19,4 +24,3 @@
     <build_type>ament_cmake</build_type>
   </export>
 </package>
-<!-- This package was generated using the Turtle Nest ROS 2 package creator -->

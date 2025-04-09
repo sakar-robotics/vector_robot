@@ -81,6 +81,8 @@ inline void rclErrorLoop()
 {
   while (true) {
     flashLED(2);
+    delay(1000);
+    ESP.restart();
   }
 }
 /**
@@ -112,9 +114,9 @@ rcl_subscription_t led_states_subscription;
 rcl_timer_t push_button_states_timer;
 
 // Relay - LEDs
-Relay redLed(Config::relayPin1);
-Relay greenLed(Config::relayPin2);
-Relay orangeLed(Config::relayPin3);
+Relay redLed(Config::relayPin3);
+Relay greenLed(Config::relayPin4);
+Relay orangeLed(Config::relayPin2);
 
 // Push buttons
 button button1(Config::buttonPin1);
@@ -240,8 +242,6 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
 
-  Serial.println("Starting Vector Base ESP32...");
-
 #ifdef USE_WIFI_TRANSPORT
   // Wifi Transport initialization
   IPAddress agent_ip = Config::WIFI_CONFIG.getAgentIP();
@@ -256,8 +256,10 @@ void setup()
 #else
 #error " No Transport defined! Please define USE_WIFI_TRANSPORT or USE_SERIAL_TRANSPORT"
 #endif
-  flashLED(3);
   hardware_init();
+  redLed.turnOff();
+  greenLed.turnOff();
+  orangeLed.turnOff();
   state = WAITING_AGENT;
   flashLED(5);
 }
@@ -267,7 +269,7 @@ void loop()
   switch (state) {
     case WAITING_AGENT:
       EXECUTE_EVERY_N_MS(500,
-                         state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_AVAILABLE :
+                         state = (RMW_RET_OK == rmw_uros_ping_agent(200, 1)) ? AGENT_AVAILABLE :
                                                                                WAITING_AGENT;);
       break;
 

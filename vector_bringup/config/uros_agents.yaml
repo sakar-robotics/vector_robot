@@ -2,16 +2,18 @@
 esp32_base_serial:
   enable: true # Set to false if you want to disable this node
   transport: "serial"
-  port: "/dev/serial/by-id/usb-Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_ac2e1ed5dc5aee118b5b6f0090fcc75d-if00-port0"
+  # port: "/dev/serial/by-path/platform-3610000.usb-usb-0:2.1.3:1.0-port0"
+  port: "/dev/ttyUSB0"
   baudrate: "115200"
-  verbose_level: "4"
+  verbose_level: "6"
 
 esp32_io_serial:
   enable: true # Set to false to disable this node
   transport: "serial"
-  port: "/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0"
+  # port: "/dev/serial/by-path/platform-3610000.usb-usb-0:2.1.2:1.0-port0"
+  port: "/dev/ttyUSB1"
   baudrate: "115200"
-  verbose_level: "4"
+  verbose_level: "6"
 
 esp32_udp:
   enable: false # Set to true to enable UDP transport and disable serial nodes if desired.

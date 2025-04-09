@@ -1,0 +1,3 @@
+diagnostics_jtop:
+  ros__parameters:
+    interval: 0.5

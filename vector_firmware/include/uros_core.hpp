@@ -19,12 +19,12 @@
  *
  * Calls the expression and enters error loop if result isn't RCL_RET_OK
  */
-#define RCCHECK(fn)                                                                                                    \
-  {                                                                                                                    \
-    rcl_ret_t temp_rc = fn;                                                                                            \
-    if((temp_rc != RCL_RET_OK)) {                                                                                      \
-      rclErrorLoop();                                                                                                  \
-    }                                                                                                                  \
+#define RCCHECK(fn)                                                                                \
+  {                                                                                                \
+    rcl_ret_t temp_rc = fn;                                                                        \
+    if ((temp_rc != RCL_RET_OK)) {                                                                 \
+      rclErrorLoop();                                                                              \
+    }                                                                                              \
   }
 
 /**
@@ -32,11 +32,11 @@
  *
  * Calls the expression without action if result isn't RCL_RET_OK
  */
-#define RCSOFTCHECK(fn)                                                                                                \
-  {                                                                                                                    \
-    rcl_ret_t temp_rc = fn;                                                                                            \
-    if((temp_rc != RCL_RET_OK)) {                                                                                      \
-    }                                                                                                                  \
+#define RCSOFTCHECK(fn)                                                                            \
+  {                                                                                                \
+    rcl_ret_t temp_rc = fn;                                                                        \
+    if ((temp_rc != RCL_RET_OK)) {                                                                 \
+    }                                                                                              \
   }
 
 /**
@@ -44,17 +44,17 @@
  *
  * Runs the given code X only if the elapsed time is greater than MS.
  */
-#define EXECUTE_EVERY_N_MS(MS, X)                                                                                      \
-  do {                                                                                                                 \
-    static volatile int64_t init = -1;                                                                                 \
-    if(init == -1) {                                                                                                   \
-      init = uxr_millis();                                                                                             \
-    }                                                                                                                  \
-    if(uxr_millis() - init > MS) {                                                                                     \
-      X;                                                                                                               \
-      init = uxr_millis();                                                                                             \
-    }                                                                                                                  \
-  } while(0)
+#define EXECUTE_EVERY_N_MS(MS, X)                                                                  \
+  do {                                                                                             \
+    static volatile int64_t init = -1;                                                             \
+    if (init == -1) {                                                                              \
+      init = uxr_millis();                                                                         \
+    }                                                                                              \
+    if (uxr_millis() - init > MS) {                                                                \
+      X;                                                                                           \
+      init = uxr_millis();                                                                         \
+    }                                                                                              \
+  } while (0)
 
 //. Function declarations for callbacks and hardware setup
 /**
@@ -69,7 +69,7 @@
  * @param timer  Pointer to the rcl_timer_t instance
  * @param last_call_time  Timestamp of the last time the timer was called
  */
-void control_callback(rcl_timer_t* timer, int64_t last_call_time);
+void control_callback(rcl_timer_t * timer, int64_t last_call_time);
 
 /**
  * @brief Encoder callback function.
@@ -79,7 +79,7 @@ void control_callback(rcl_timer_t* timer, int64_t last_call_time);
  * @param timer Pointer to the rcl_timer_t instance.
  * @param last_call_time Timestamp of the last time the timer was called.
  */
-void encoder_callback(rcl_timer_t* timer, int64_t last_call_time);
+void encoder_callback(rcl_timer_t * timer, int64_t last_call_time);
 
 /**
  * @brief Motor subscription callback function.
@@ -89,24 +89,26 @@ void encoder_callback(rcl_timer_t* timer, int64_t last_call_time);
  *
  * @param msgin Pointer to the received message.
  */
-void motor_callback(const void* msgin);
+void motor_callback(const void * msgin);
 
 /**
  * @brief Callback for updating PID controller parameters.
  *
  * This function is invoked when a parameter update is received by the parameter server.
- * It expects the parameter name in the format "<param>_motor<index>" (e.g. "Kp_motor1", "Ki_motor2", "Kd_motor3").
- * The function extracts the parameter type and motor index, selects the corresponding PIDController,
- * converts the new parameter value to a float, and updates the controller's tunings accordingly.
+ * It expects the parameter name in the format "<param>_motor<index>" (e.g. "Kp_motor1",
+ * "Ki_motor2", "Kd_motor3"). The function extracts the parameter type and motor index, selects the
+ * corresponding PIDController, converts the new parameter value to a float, and updates the
+ * controller's tunings accordingly.
  *
- * If the parameter name format is invalid or the motor index is out of range, the update is rejected.
+ * If the parameter name format is invalid or the motor index is out of range, the update is
+ * rejected.
  *
  * @param old_param Pointer to the parameter before the update (can be NULL if not applicable).
  * @param new_param Pointer to the new parameter value.
  * @param context Unused callback context.
  * @return true if the parameter was updated successfully; false otherwise.
  */
-bool param_callback(const Parameter* old_param, const Parameter* new_param, void* context);
+bool param_callback(const Parameter * old_param, const Parameter * new_param, void * context);
 
 /**
  * @brief Hardware setup function.
@@ -191,7 +193,7 @@ extern enum states state;
  */
 inline void flashLED(int n_times)
 {
-  for(int i = 0; i < n_times; i++) {
+  for (int i = 0; i < n_times; i++) {
     digitalWrite(LED_BUILTIN, HIGH);
     delay(150);
     digitalWrite(LED_BUILTIN, LOW);
@@ -208,8 +210,10 @@ inline void flashLED(int n_times)
  */
 inline void rclErrorLoop()
 {
-  while(true) {
+  while (true) {
     flashLED(2);
+    delay(1000);
+    ESP.restart();
   }
 }
 #endif  // UROS_CORE_HPP
